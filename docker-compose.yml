@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  mobile:
+    build: ./
+    volumes:
+      - ./build/:/flutter/
