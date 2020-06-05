@@ -1,4 +1,4 @@
-FROM cirrusci/flutter:beta AS BUILDER
+FROM cirrusci/flutter:stable AS BUILDER
 
 WORKDIR /flutter
 COPY . /flutter
