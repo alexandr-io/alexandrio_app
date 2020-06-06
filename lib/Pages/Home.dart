@@ -35,10 +35,10 @@ List<Book> test = [
     image: "https://static.wixstatic.com/media/9c4410_876c178659774d75aa6d9ec9fadfa4a2~mv2_d_1650_2550_s_2.jpg/v1/fill/w_270,h_412,al_c,q_80,usm_0.66_1.00_0.01/WILD%20LIGHT%20EBOOK.webp",
     title: "Wild Light",
   ),
-  Book(
-    image: "https://preview.redd.it/4lg1th3359121.jpg?width=544&auto=webp&s=b930c87f1f34da1629a31d206969bc3fb9c1fb36",
-    title: "Billy Herringt♂n",
-  ),
+  // Book(
+  //   image: "https://preview.redd.it/4lg1th3359121.jpg?width=544&auto=webp&s=b930c87f1f34da1629a31d206969bc3fb9c1fb36",
+  //   title: "Billy Herringt♂n",
+  // ),
 ];
 
 class BookCard extends StatelessWidget {
