@@ -10,4 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:EIP_Alexandrio_Flutter/main.dart';
 
-void main() {}
+void main() {
+  test('Hello', () {
+    expect(1, 1);
+  });
+}
