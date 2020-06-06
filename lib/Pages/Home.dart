@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:http/http.dart' as http;
 
 import 'package:EIP_Alexandrio_Flutter/Components/UI/AppBarBlur.dart';
 import 'package:EIP_Alexandrio_Flutter/Components/UI/WidgetBlur.dart';
@@ -125,6 +126,25 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.all(0.0),
               child: BookCard(
                 book: test[Random().nextInt(test.length)],
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: WidgetBlur(
+          widget: Container(
+            color: Colors.black54,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder(
+                future: http.get('http://back.alexandrio.cloud:9180/'),
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("An error has occured!");
+                  } else if (snapshot.hasData) {
+                    return Text(snapshot.data.body);
+                  }
+                  return Text("Loading from API...");
+                },
               ),
             ),
           ),
