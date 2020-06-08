@@ -22,7 +22,7 @@ List<Book> test = [
   ),
   Book(
     image: "https://www.booktopia.com.au/blog/wp-content/uploads/2018/12/the-arsonist.jpg",
-    title: "The♂Semen♂Arsonist",
+    title: "Semen♂Arsonist",
   ),
   Book(
     image: "https://www.designforwriters.com/wp-content/uploads/2017/10/design-for-writers-book-cover-tf-2-a-million-to-one.jpg",
