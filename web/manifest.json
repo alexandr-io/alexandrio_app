@@ -1,6 +1,6 @@
 {
-    "name": "EIP_Alexandrio_Flutter",
-    "short_name": "EIP_Alexandrio_Flutter",
+    "name": "demo",
+    "short_name": "demo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

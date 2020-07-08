@@ -1,4 +1,4 @@
-name: EIP_Alexandrio_Flutter
+name: demo
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -21,7 +21,6 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  http: any
   flutter:
     sdk: flutter
 

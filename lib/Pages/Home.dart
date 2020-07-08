@@ -1,153 +1,207 @@
 import 'dart:math';
-import 'package:http/http.dart' as http;
 
-import 'package:EIP_Alexandrio_Flutter/Components/UI/AppBarBlur.dart';
-import 'package:EIP_Alexandrio_Flutter/Components/UI/WidgetBlur.dart';
+import 'package:demo/Components/UI/AppBarBlur.dart';
 import 'package:flutter/material.dart';
 
-class Book {
-  final String title;
-  final String image;
+import '../Components/Logo.dart';
+import '../Components/UI/AppBarPadding.dart';
+import '../App.dart';
+import '../ThemeBuilder.dart';
+import '../Components/Book.dart';
 
-  Book({
-    @required this.title,
-    @required this.image,
-  });
-}
+AppBarPadding searchAppBar(bool tabletMode) => AppBarPadding(
+      padding: EdgeInsets.symmetric(
+        vertical: 8.0,
+        horizontal: 16.0,
+      ),
+      appBarFactor: 0.9,
+      appBar: AppBar(
+        elevation: tabletMode ? 1.0 : 2.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        titleSpacing: 0.0,
+        leading: tabletMode ? Icon(Icons.search) : null,
+        title: TextField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            filled: false,
+            hintText: "Search books",
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: () async {},
+          )
+        ],
+      ),
+    );
 
-List<Book> test = [
-  Book(
-    image: "https://i.imgur.com/NuXeMyR.png",
-    title: "Gratitude Journal",
-  ),
-  Book(
-    image: "https://www.booktopia.com.au/blog/wp-content/uploads/2018/12/the-arsonist.jpg",
-    title: "The♂Semen♂Arsonist",
-  ),
-  Book(
-    image: "https://www.designforwriters.com/wp-content/uploads/2017/10/design-for-writers-book-cover-tf-2-a-million-to-one.jpg",
-    title: "A Million to One",
-  ),
-  Book(
-    image: "https://cdn.pastemagazine.com/www/system/images/photo_albums/best-book-covers-fall-2019/large/bbcdune.jpg?1384968217",
-    title: "DUNE",
-  ),
-  Book(
-    image: "https://static.wixstatic.com/media/9c4410_876c178659774d75aa6d9ec9fadfa4a2~mv2_d_1650_2550_s_2.jpg/v1/fill/w_270,h_412,al_c,q_80,usm_0.66_1.00_0.01/WILD%20LIGHT%20EBOOK.webp",
-    title: "Wild Light",
-  ),
-  // Book(
-  //   image: "https://preview.redd.it/4lg1th3359121.jpg?width=544&auto=webp&s=b930c87f1f34da1629a31d206969bc3fb9c1fb36",
-  //   title: "Billy Herringt♂n",
-  // ),
-];
+class DesktopAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final PreferredSizeWidget appBar;
+  final Function onMenuTap;
 
-class BookCard extends StatelessWidget {
-  final Book book;
-
-  const BookCard({
+  const DesktopAppBar({
     Key key,
-    @required this.book,
+    @required this.appBar,
+    @required this.onMenuTap,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6.0),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Container(
-                  color: Colors.red,
-                  child: Image.network(
-                    book.image,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+  Widget build(BuildContext context) {
+    ThemeData currentTheme = Theme.of(context);
+
+    return Container(
+      color: currentTheme.appBarTheme.color,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    WidgetBlur(
-                      widget: Container(
-                        color: Colors.transparent.withAlpha(100),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(book.title),
+                    Container(
+                      width: 304.0,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              icon: Icon(Icons.menu),
+                              onPressed: onMenuTap,
                             ),
-                          ],
-                        ),
+                          ),
+                          Logo(),
+                        ],
                       ),
+                    ),
+                    Expanded(
+                      child: appBar,
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            Divider(
+              height: 0.0,
+            ),
+          ],
         ),
-      );
-  // Card(
-  //       child: Stack(
-  //         children: [
-  //           Image.network(
-  //             "https://www.booktopia.com.au/blog/wp-content/uploads/2018/12/the-arsonist.jpg",
-  //           ),
-  //         ],
-  //       ),
-  //     );
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => appBar == null ? 0.0 : Size(appBar.preferredSize.width, appBar.preferredSize.height * 0.9 + 5.6);
 }
 
-class HomePage extends StatelessWidget {
+class AppDrawer extends StatelessWidget {
+  final bool tabletMode;
+
+  const AppDrawer({
+    Key key,
+    @required this.tabletMode,
+  }) : super(key: key);
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(Icons.file_upload),
-        ),
-        appBar: AppBarBlur(
-          theme: ThemeData.dark(),
-          appBar: AppBar(
-            title: Text("Home"),
-            backgroundColor: Colors.transparent.withAlpha(100),
-          ),
-        ),
-        body: GridView.extent(
-          maxCrossAxisExtent: 175,
-          childAspectRatio: 9.0 / 16.0,
-          children: List.generate(
-            100,
-            (index) => Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: BookCard(
-                book: test[Random().nextInt(test.length)],
+  Widget build(BuildContext context) => Drawer(
+        elevation: tabletMode ? 0.0 : 16.0,
+        child: ListView(
+          children: [
+            if (!tabletMode)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Logo(),
+                    Text("developer preview r1"),
+                  ],
+                ),
               ),
-            ),
-          ),
-        ),
-        bottomNavigationBar: WidgetBlur(
-          widget: Container(
-            color: Colors.black54,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder(
-                future: http.get('http://back.alexandrio.cloud:9180/'),
-                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("An error has occured!");
-                  } else if (snapshot.hasData) {
-                    return Text(snapshot.data.body);
-                  }
-                  return Text("Loading from API...");
-                },
+            if (!tabletMode)
+              Divider(
+                height: 0.0,
               ),
+            SwitchListTile(
+              value: ThemeBuilder.of(context).themeMode == ThemeMode.light,
+              onChanged: (bool newValue) {
+                var opposite = (ThemeBuilder.of(context).themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
+                App.setState(context, () {
+                  ThemeBuilder.of(context).themeMode = opposite;
+                });
+              },
+              title: Text("Test"),
             ),
-          ),
+          ],
         ),
       );
+}
+
+class HomeState extends State<Home> {
+  bool drawerOpen = true;
+
+  @override
+  Widget build(BuildContext context) {
+    bool tabletMode = MediaQuery.of(context).size.width > 700;
+
+    return Scaffold(
+      extendBodyBehindAppBar: true, //!tabletMode,
+      drawer: tabletMode
+          ? null
+          : AppDrawer(
+              tabletMode: tabletMode,
+            ),
+      appBar: tabletMode
+          ? AppBarBlur(
+              appBar: DesktopAppBar(
+                appBar: searchAppBar(tabletMode),
+                onMenuTap: () async {
+                  setState(() {
+                    drawerOpen = !drawerOpen;
+                  });
+                },
+              ),
+            )
+          : searchAppBar(tabletMode),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.file_upload),
+        label: Text("Upload"),
+        onPressed: () async {},
+      ),
+      body: Row(
+        children: [
+          if (tabletMode && drawerOpen)
+            AppDrawer(
+              tabletMode: tabletMode,
+            ),
+          Expanded(
+            child: GridView.extent(
+              maxCrossAxisExtent: 175,
+              childAspectRatio: 9.0 / 16.0,
+              children: List.generate(
+                100,
+                (index) => Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: BookCard(
+                    book: test[Random().nextInt(test.length)],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  @override
+  HomeState createState() => HomeState();
 }
