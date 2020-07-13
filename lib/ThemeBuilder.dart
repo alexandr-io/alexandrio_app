@@ -35,6 +35,7 @@ class ThemeBuilderState extends State<ThemeBuilder> {
         textSelectionColor: accentOnBackground(data),
         textSelectionHandleColor: accentOnBackground(data),
         cursorColor: accentOnBackground(data),
+        toggleableActiveColor: accentOnBackground(data),
       );
 
   ThemeData dark() {
