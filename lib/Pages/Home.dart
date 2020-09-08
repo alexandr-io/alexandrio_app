@@ -9,6 +9,9 @@ import '../App.dart';
 import '../ThemeBuilder.dart';
 import '../Components/Book.dart';
 
+import 'Profile.dart';
+import 'Login.dart';
+
 AppBarPadding searchAppBar(bool tabletMode) => AppBarPadding(
       padding: EdgeInsets.symmetric(
         vertical: 8.0,
@@ -138,6 +141,26 @@ class AppDrawer extends StatelessWidget {
               },
               title: Text("Test"),
             ),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text("Votre profil"),
+              onTap: ()
+                async => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Profile(),
+                  )
+                ),
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text("Deconnexion"),
+              onTap: ()
+                async => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Login(),
+                  )
+                )
+            )
           ],
         ),
       );
