@@ -1,10 +1,9 @@
 import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
 
-import 'LoginPassword.dart';
-import 'Register.dart';
+import 'RegisterInfo.dart';
 
-class Login extends StatelessWidget {
+class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SingleChildScrollView(
@@ -19,7 +18,7 @@ class Login extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "Sign in",
+                    "Create an Alexandrio Account",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline5,
                   ),
@@ -29,7 +28,7 @@ class Login extends StatelessWidget {
                     bottom: 32.0,
                   ),
                   child: Text(
-                    "with your Alexandrio Account.",
+                    "Enter your name",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
@@ -39,17 +38,17 @@ class Login extends StatelessWidget {
                   child: TextFormField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: "Email or phone",
+                      labelText: "First name",
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: FlatButton(
-                    padding: EdgeInsets.all(8.0),
-                    onPressed: () {},
-                    child: Text(
-                      "Forgot email?",
+                SizedBox.fromSize(size: Size.fromHeight(24.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Last name",
                     ),
                   ),
                 ),
@@ -64,27 +63,14 @@ class Login extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                FlatButton(
+                RaisedButton(
+                  child: Text("Next"),
                   onPressed: () async => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => Register(),
+                      builder: (BuildContext context) => RegisterInfo(),
                     ),
                   ),
-                  child: Text("Create account"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: RaisedButton(
-                    child: Text("Next"),
-                    onPressed: () async => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => LoginPassword(
-                          login: "null",
-                        ),
-                      ),
-                    ),
-                    elevation: 0.0,
-                  ),
+                  elevation: 0.0,
                 ),
               ],
             ),
