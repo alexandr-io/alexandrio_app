@@ -2,6 +2,7 @@ import 'package:demo/Pages/Landing.dart';
 import 'package:flutter/material.dart';
 
 import 'ThemeBuilder.dart';
+import 'backend/APIConnector.dart';
 
 class App extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
+  var api = APIConnector();
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

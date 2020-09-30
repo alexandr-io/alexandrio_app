@@ -2,10 +2,16 @@ import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import '../App.dart';
+// import '../backend/Connection.dart';
+// import '../backend/APIConnector.dart';
 
 class LoginPasswordState extends State<LoginPassword> {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    var api = context.findAncestorStateOfType<AppState>().api;
+
+      return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -56,11 +62,16 @@ class LoginPasswordState extends State<LoginPassword> {
               children: [
                 RaisedButton(
                   child: Text("Next"),
-                  onPressed: () async => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(),
-                    ),
-                  ),
+                  onPressed: () async {
+                    var user = await api.login('test', 'coucou');
+                    if (user?.authToken != null || user?.refreshToken != null ) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Home(),
+                        ),
+                      );
+                    }
+                  },
                   elevation: 0.0,
                 ),
               ],
@@ -68,6 +79,7 @@ class LoginPasswordState extends State<LoginPassword> {
           ),
         ),
       );
+  }
 }
 
 class LoginPassword extends StatefulWidget {

@@ -17,38 +17,31 @@ class Profile extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.arrow_right),
             title: Text("Nom"),
-            onTap: () {
+            onTap: () async {
               print('Name');
             }
           ),
           ListTile(
             leading: Icon(Icons.arrow_right),
-            title: Text("Mot de passe"),
-            onTap: () {
-              print('Password');
-            }
-          ),
-          ListTile(
-            leading: Icon(Icons.arrow_right),
             title: Text("Email"),
-            onTap: () {
+            onTap: () async {
               print('Email');
             }
           ),
           RaisedButton(
-            onPressed: () {
+            onPressed: () async {
              auth();
             },
             child: Text('Test connection')
           ),
           RaisedButton(
-            onPressed: () {
+            onPressed: () async {
              login('test', 'coucou');
             },
             child: Text('Test login')
           ),
           RaisedButton(
-            onPressed: () {
+            onPressed: () async {
              register('test', 'email@gmail.com', 'coucou', 'coucou');
             },
             child: Text('Test register')
