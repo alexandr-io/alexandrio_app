@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:demo/Components/UI/AppBarBlur.dart';
@@ -8,6 +9,7 @@ import '../Components/UI/AppBarPadding.dart';
 import '../App.dart';
 import '../ThemeBuilder.dart';
 import '../Components/Book.dart';
+import '../backend/User.dart';
 
 import 'Profile.dart';
 import 'Login.dart';
@@ -104,14 +106,18 @@ class DesktopAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class AppDrawer extends StatelessWidget {
   final bool tabletMode;
+  final User user;
 
   const AppDrawer({
     Key key,
     @required this.tabletMode,
+    @required this.user,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Drawer(
+  Widget build(BuildContext context) {
+
+    return Drawer(
         elevation: tabletMode ? 0.0 : 16.0,
         child: ListView(
           children: [
@@ -147,23 +153,27 @@ class AppDrawer extends StatelessWidget {
               onTap: ()
                 async => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Profile(),
+                    builder: (BuildContext context) => Profile(
+                      user: user,
+                    ),
                   )
                 ),
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Deconnexion"),
-              onTap: ()
-                async => Navigator.of(context).push(
+              onTap: () async {
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context) => Login(),
                   )
-                )
+                );
+              }
             )
           ],
         ),
       );
+  }
 }
 
 class HomeState extends State<Home> {
@@ -179,6 +189,7 @@ class HomeState extends State<Home> {
           ? null
           : AppDrawer(
               tabletMode: tabletMode,
+              user: widget.user,
             ),
       appBar: tabletMode
           ? AppBarBlur(
@@ -202,6 +213,7 @@ class HomeState extends State<Home> {
           if (tabletMode && drawerOpen)
             AppDrawer(
               tabletMode: tabletMode,
+              user: widget.user,
             ),
           Expanded(
             child: GridView.extent(
@@ -225,6 +237,13 @@ class HomeState extends State<Home> {
 }
 
 class Home extends StatefulWidget {
+  final User user;
+
+  const Home({
+    Key key,
+    this.user,
+  }) : super(key: key);
+
   @override
   HomeState createState() => HomeState();
 }

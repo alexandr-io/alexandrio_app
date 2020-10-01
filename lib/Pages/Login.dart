@@ -5,8 +5,12 @@ import 'LoginPassword.dart';
 import 'Register.dart';
 
 class Login extends StatelessWidget {
+
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    var loginController = TextEditingController();
+
+    return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -41,6 +45,7 @@ class Login extends StatelessWidget {
                       border: OutlineInputBorder(),
                       labelText: "Email or phone",
                     ),
+                    controller: loginController,
                   ),
                 ),
                 Align(
@@ -79,7 +84,7 @@ class Login extends StatelessWidget {
                     onPressed: () async => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (BuildContext context) => LoginPassword(
-                          login: "null",
+                          login: loginController.text,
                         ),
                       ),
                     ),
@@ -91,4 +96,5 @@ class Login extends StatelessWidget {
           ),
         ),
       );
+  }
 }

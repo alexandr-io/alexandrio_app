@@ -40,11 +40,13 @@ class APIConnector {
     );
 
 
-    print(json.decode(response.body));
+    var decodedResponse = json.decode(response.body);
+
     return User(
-      username: 'username',
-      authToken: 'authToken',
-      refreshToken: 'refreshToken', 
+      username: decodedResponse['username'],
+      email: decodedResponse['email'],
+      authToken: decodedResponse['auth_token'],
+      refreshToken: decodedResponse['refresh_token'], 
     );
   }
 
@@ -64,11 +66,13 @@ class APIConnector {
       }
     );
 
-    print(json.decode(response.body));
+    var decodedResponse = json.decode(response.body);
+
     return User(
-      username: 'username',
-      authToken: 'authToken',
-      refreshToken: 'refreshToken', 
+      username: decodedResponse['username'],
+      email: decodedResponse['email'],
+      authToken: decodedResponse['auth_token'],
+      refreshToken: decodedResponse['refresh_token'], 
     );
   }
 

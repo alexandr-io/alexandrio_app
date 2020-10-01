@@ -5,7 +5,11 @@ import 'RegisterInfo.dart';
 
 class Register extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) { 
+    var firstnameController = TextEditingController();
+    var lastnameController = TextEditingController();
+
+      return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -40,6 +44,7 @@ class Register extends StatelessWidget {
                       border: OutlineInputBorder(),
                       labelText: "First name",
                     ),
+                    controller: firstnameController,
                   ),
                 ),
                 SizedBox.fromSize(size: Size.fromHeight(24.0)),
@@ -50,6 +55,7 @@ class Register extends StatelessWidget {
                       border: OutlineInputBorder(),
                       labelText: "Last name",
                     ),
+                    controller: lastnameController,
                   ),
                 ),
               ],
@@ -67,7 +73,9 @@ class Register extends StatelessWidget {
                   child: Text("Next"),
                   onPressed: () async => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => RegisterInfo(),
+                      builder: (BuildContext context) => RegisterInfo(
+                        login: firstnameController.text + lastnameController.text,
+                      ),
                     ),
                   ),
                   elevation: 0.0,
@@ -77,4 +85,5 @@ class Register extends StatelessWidget {
           ),
         ),
       );
+  }
 }

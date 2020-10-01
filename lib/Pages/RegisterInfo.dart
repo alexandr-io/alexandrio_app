@@ -1,10 +1,11 @@
 import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'LoginPassword.dart';
 import 'RegisterEmail.dart';
 
-class RegisterInfo extends StatelessWidget {
+class RegisterInfoState extends State<RegisterInfo> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SingleChildScrollView(
@@ -99,7 +100,9 @@ class RegisterInfo extends StatelessWidget {
                   child: Text("Next"),
                   onPressed: () async => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => RegisterEmail(),
+                      builder: (BuildContext context) => RegisterEmail(
+                        login: widget.login,
+                      ),
                     ),
                   ),
                   elevation: 0.0,
@@ -109,4 +112,16 @@ class RegisterInfo extends StatelessWidget {
           ),
         ),
       );
+}
+
+class RegisterInfo extends StatefulWidget {
+  final String login;
+
+  const RegisterInfo({
+    Key key,
+    @required this.login,
+  }) : super(key: key);
+
+  @override
+  RegisterInfoState createState() => RegisterInfoState();
 }
