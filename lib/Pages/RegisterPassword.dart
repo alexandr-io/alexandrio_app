@@ -1,11 +1,20 @@
+import 'dart:developer';
+
 import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import '../App.dart';
+import '../backend/User.dart';
 
 class RegisterPasswordState extends State<RegisterPassword> {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    var api = context.findAncestorStateOfType<AppState>().api;
+    var passwordController = TextEditingController();
+    var confirmPasswordController = TextEditingController();
+
+      return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -41,6 +50,7 @@ class RegisterPasswordState extends State<RegisterPassword> {
                       border: OutlineInputBorder(),
                       labelText: "Password",
                     ),
+                    controller: passwordController,
                   ),
                 ),
                 SizedBox.fromSize(size: Size.fromHeight(24.0)),
@@ -52,6 +62,7 @@ class RegisterPasswordState extends State<RegisterPassword> {
                       border: OutlineInputBorder(),
                       labelText: "Confirm",
                     ),
+                    controller: confirmPasswordController,
                   ),
                 ),
               ],
@@ -67,11 +78,20 @@ class RegisterPasswordState extends State<RegisterPassword> {
               children: [
                 RaisedButton(
                   child: Text("Next"),
-                  onPressed: () async => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Home(),
-                    ),
-                  ),
+                  onPressed: () async {
+                    User newUser = await api.register(widget.login, widget.email, passwordController.text, confirmPasswordController.text);
+                    if (newUser?.authToken != null || newUser?.refreshToken != null) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Home(
+                            user: newUser,
+                          ),
+                        ),
+                      );
+                    } else {
+                      print("An error occured, please retry");
+                    }
+                  },
                   elevation: 0.0,
                 ),
               ],
@@ -79,14 +99,17 @@ class RegisterPasswordState extends State<RegisterPassword> {
           ),
         ),
       );
+  }
 }
 
 class RegisterPassword extends StatefulWidget {
   final String login;
+  final String email;
 
   const RegisterPassword({
     Key key,
     @required this.login,
+    @required this.email,
   }) : super(key: key);
 
   @override

@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'RegisterInfo.dart';
 
-class RegisterEmail extends StatelessWidget {
+class RegisterEmailState extends State<RegisterEmail> {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    var emailController = TextEditingController();
+
+    return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -41,6 +44,7 @@ class RegisterEmail extends StatelessWidget {
                       border: OutlineInputBorder(),
                       labelText: "Email address",
                     ),
+                    controller: emailController,
                   ),
                 ),
               ],
@@ -59,7 +63,8 @@ class RegisterEmail extends StatelessWidget {
                   onPressed: () async => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => RegisterPassword(
-                        login: "null",
+                        login: widget.login,
+                        email: emailController.text,
                       ),
                     ),
                   ),
@@ -70,4 +75,17 @@ class RegisterEmail extends StatelessWidget {
           ),
         ),
       );
+  }
+}
+
+class RegisterEmail extends StatefulWidget {
+  final String login;
+
+  const RegisterEmail({
+    Key key,
+    @required this.login,
+  }) : super(key: key);
+
+  @override
+  RegisterEmailState createState() => RegisterEmailState();
 }
