@@ -6,7 +6,7 @@ import "User.dart";
 
 class APIConnector {
   var headers = {};
-  var endpoint = "http://prod.alexandrio.cloud:3000";
+  var endpoint = "http://auth.preprod.alexandrio.cloud";
 
   User user;
 
@@ -67,6 +67,12 @@ class APIConnector {
     );
 
     var decodedResponse = json.decode(response.body);
+    
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+    } else {
+      print(json.decode(response.body));
+    }
 
     return User(
       username: decodedResponse['username'],

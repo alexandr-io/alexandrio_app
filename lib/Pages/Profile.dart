@@ -16,52 +16,34 @@ class ProfileState extends State<Profile> {
               color: Colors.blue,
               size: 36.0,
             ),
-            ListTile(
-              leading: Icon(Icons.arrow_right),
-              title: Text(widget.user.username),
-              onTap: () async {
-                print(widget.user.username);
-              }
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: widget.user.username,
+              ),
+              enabled: false,
             ),
-            ListTile(
-              leading: Icon(Icons.arrow_right),
-              title: Text(widget.user.email),
-              onTap: () async {
-                print(widget.user.email);
-              }
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: widget.user.email,
+              ),
+              enabled: false,
             ),
-            ListTile(
-              leading: Icon(Icons.arrow_right),
-              title: Text(widget.user.refreshToken),
-              onTap: () async {
-                print(widget.user.refreshToken);
-              }
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: widget.user.refreshToken,
+              ),
+              enabled: false,
             ),
-            ListTile(
-              leading: Icon(Icons.arrow_right),
-              title: Text(widget.user.authToken),
-              onTap: () async {
-                print(widget.user.authToken);
-              }
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: widget.user.authToken,
+              ),
+              enabled: false,
             ),
-            // RaisedButton(
-            //   onPressed: () async {
-            //   auth();
-            //   },
-            //   child: Text('Test connection')
-            // ),
-            // RaisedButton(
-            //   onPressed: () async {
-            //   login('test', 'coucou');
-            //   },
-            //   child: Text('Test login')
-            // ),
-            // RaisedButton(
-            //   onPressed: () async {
-            //   register('test', 'email@gmail.com', 'coucou', 'coucou');
-            //   },
-            //   child: Text('Test register')
-            // ),
           ],
         ),
       )
