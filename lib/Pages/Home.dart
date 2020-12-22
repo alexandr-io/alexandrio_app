@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math';
 
 import 'package:demo/Components/UI/AppBarBlur.dart';
+import 'package:demo/Pages/Test.dart';
 import 'package:flutter/material.dart';
 
 import '../Components/Logo.dart';
@@ -116,63 +117,65 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
-        elevation: tabletMode ? 0.0 : 16.0,
-        child: ListView(
-          children: [
-            if (!tabletMode)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Logo(),
-                    Text("developer preview r1"),
-                  ],
-                ),
+      elevation: tabletMode ? 0.0 : 16.0,
+      child: ListView(
+        children: [
+          if (!tabletMode)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Logo(),
+                  Text("developer preview r1"),
+                ],
               ),
-            if (!tabletMode)
-              Divider(
-                height: 0.0,
+            ),
+          if (!tabletMode)
+            Divider(
+              height: 0.0,
+            ),
+          SwitchListTile(
+            value: ThemeBuilder.of(context).themeMode == ThemeMode.light,
+            onChanged: (bool newValue) {
+              var opposite = (ThemeBuilder.of(context).themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
+              App.setState(context, () {
+                ThemeBuilder.of(context).themeMode = opposite;
+              });
+            },
+            title: Text("Test"),
+          ),
+          ListTile(
+            leading: Icon(Icons.account_circle),
+            title: Text("Votre profil"),
+            onTap: () async => Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => Profile(
+                user: user,
               ),
-            SwitchListTile(
-              value: ThemeBuilder.of(context).themeMode == ThemeMode.light,
-              onChanged: (bool newValue) {
-                var opposite = (ThemeBuilder.of(context).themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
-                App.setState(context, () {
-                  ThemeBuilder.of(context).themeMode = opposite;
-                });
-              },
-              title: Text("Test"),
+            )),
+          ),
+          ListTile(
+            leading: Icon(Icons.book),
+            title: Text("Book test"),
+            onTap: () async => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => TestPage(),
+              ),
             ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text("Votre profil"),
-              onTap: ()
-                async => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Profile(
-                      user: user,
-                    ),
-                  )
-                ),
-            ),
-            ListTile(
+          ),
+          ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Deconnexion"),
               onTap: () async {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => Login(),
-                  )
-                );
-              }
-            )
-          ],
-        ),
-      );
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Login(),
+                ));
+              })
+        ],
+      ),
+    );
   }
 }
 

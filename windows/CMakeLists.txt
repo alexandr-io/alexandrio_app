@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(Mobile LANGUAGES CXX)
+project(mobile LANGUAGES CXX)
 
-set(BINARY_NAME "Mobile")
+set(BINARY_NAME "mobile")
 
 cmake_policy(SET CMP0063 NEW)
 
