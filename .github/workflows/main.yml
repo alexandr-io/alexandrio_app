@@ -6,10 +6,10 @@ on:
   release:
     types: [published]
 
-defaults:
-  shell: bash
-
 jobs:
+  defaults:
+    shell: bash
+
   build:
     strategy:
       fail-fast: false
