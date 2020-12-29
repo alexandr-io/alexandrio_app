@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
 
@@ -14,6 +15,8 @@ import '../backend/User.dart';
 
 import 'Profile.dart';
 import 'Login.dart';
+
+import 'package:http/http.dart' as http;
 
 AppBarPadding searchAppBar(bool tabletMode) => AppBarPadding(
       padding: EdgeInsets.symmetric(
@@ -182,6 +185,27 @@ class AppDrawer extends StatelessWidget {
 class HomeState extends State<Home> {
   bool drawerOpen = true;
 
+  Future<String> test() async {
+    var test2 = http.put(
+      'http://library.preprod.alexandrio.cloud/library', // John: test
+      headers: {
+        'Authorization': 'Bearer ${widget.user.authToken}',
+      },
+    );
+    // var headers = {'Authorization': 'Bearer ${widget.user.authToken}', 'Content-Type': 'application/json'};
+    // var request = http.Request('GET', 'http://library.preprod.alexandrio.cloud/library');
+    // request.body = '''{"name": "Bookshelf"}''';
+    // request.headers.addAll(headers);
+
+    // http.StreamedResponse response = await request.send();
+
+    // if (response.statusCode == 200) {
+    //   return await response.stream.bytesToString();
+    // } else {
+    //   print(response.reasonPhrase);
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool tabletMode = MediaQuery.of(context).size.width > 700;
@@ -219,19 +243,89 @@ class HomeState extends State<Home> {
               user: widget.user,
             ),
           Expanded(
-            child: GridView.extent(
-              maxCrossAxisExtent: 175,
-              childAspectRatio: 9.0 / 16.0,
-              children: List.generate(
-                100,
-                (index) => Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: BookCard(
-                    book: test[Random().nextInt(test.length)],
-                  ),
-                ),
+            child: FutureBuilder<http.Response>(
+              future: http.get(
+                'http://library.preprod.alexandrio.cloud/libraries', // John: test
+                headers: {
+                  'Authorization': 'Bearer ${widget.user.authToken}',
+                },
               ),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  var jsonResponse = jsonDecode(snapshot.data.body);
+                  return ListView(
+                    children: [
+                      for (var library in jsonResponse['libraries'])
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(library['name']),
+                            Text(library['id']),
+                            FutureBuilder(
+                              future: http.put(
+                                'http://library.preprod.alexandrio.cloud/library', // John: test
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer ${widget.user.authToken}',
+                                },
+                                body: jsonEncode({
+                                  'Name': library['name'],
+                                }),
+                              ),
+                              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                                var jsonResponse = jsonDecode(snapshot.data.body);
+                                if (snapshot.hasData) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (var book in jsonResponse['books'])
+                                        InkWell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('${book['title']} : ${book['id']}'),
+                                          ),
+                                          onTap: () async {
+                                            var response = await http.put(
+                                              'http://media.preprod.alexandrio.cloud/book/download', // John: test
+                                              headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': 'Bearer ${widget.user.authToken}',
+                                              },
+                                              body: jsonEncode({
+                                                'book_id': book['id'],
+                                              }),
+                                            );
+
+                                            print('${response.body}');
+                                          },
+                                        ),
+                                    ],
+                                  );
+                                }
+                                return Text('Loading..');
+                              },
+                            ),
+                          ],
+                        ),
+                    ],
+                  );
+                }
+                return Text('Loading...');
+              },
             ),
+            // child: GridView.extent(
+            //   maxCrossAxisExtent: 175,
+            //   childAspectRatio: 9.0 / 16.0,
+            //   children: List.generate(
+            //     100,
+            //     (index) => Padding(
+            //       padding: const EdgeInsets.all(0.0),
+            //       child: BookCard(
+            //         book: test[Random().nextInt(test.length)],
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ),
         ],
       ),
