@@ -56,8 +56,10 @@ jobs:
     name: ${{matrix.ACTION_NAME}}
 
     steps:
-    - run: sudo apt install -y ninja-build
+    - name: Install Dependencies
+      run: sudo apt install -y ninja-build
       if: matrix.target == 'linux'
+
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
       with:
@@ -65,19 +67,27 @@ jobs:
     - uses: subosito/flutter-action@v1  # https://github.com/marketplace/actions/flutter-action
       with:
         channel: 'dev'  # 'master' doesn't work somehow, gotta do it manually...
-    - run: flutter channel master && flutter upgrade
-    - run: flutter clean
-    - run: flutter config ${{matrix.ENABLE}}
-    - run: flutter create .
-    - run: flutter pub get
-    - run: flutter test
-    - run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
+
+    - name: Switch Flutter channel
+      run: flutter channel master && flutter upgrade
+
+    - name: Cleanup workspace
+      run: flutter clean
+
+    - name: Configure Flutter
+      run: |
+        flutter config ${{matrix.ENABLE}}
+        flutter create .
+        flutter pub get
+
+    - name: Run tests
+      run: flutter test
+
+    - name: Build
+      run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
   
     # tmp
-    - run: tree build
-      if: matrix.OS_NAME != 'windows'
-    - run: tree build
-      shell: cmd
-      if: matrix.OS_NAME == 'windows'
+    - name: List build directory
+      run: find build
 
     # TODO: Upload bins and publish in releases
