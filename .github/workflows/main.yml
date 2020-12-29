@@ -6,11 +6,12 @@ on:
   release:
     types: [published]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
-    defaults:
-      shell: bash
-
     strategy:
       fail-fast: false
       matrix:
