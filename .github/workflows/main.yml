@@ -44,14 +44,14 @@ jobs:
         java-version: '12.x'
     - uses: subosito/flutter-action@v1  # https://github.com/marketplace/actions/flutter-action
       with:
-        channel: 'master'
+        channel: 'dev'
     - run: flutter config --enable-${{matrix.OS_NAME}}-desktop
     - run: flutter config --enable-${{matrix.MOBILE_NAME}}
-      if: matrix.MOBILE_BUILD
+      if: matrix.MOBILE_BUILD == true
     - run: flutter pub get
     - run: flutter test
     - run: flutter build --no-pub ${{matrix.OS_NAME}}
     - run: flutter build --no-pub ${{matrix.MOBILE_TARGET}} ${{matrix.MOBILE_ARGS}}
-      if: matrix.MOBILE_BUILD
+      if: matrix.MOBILE_BUILD == true
 
     # TODO: Upload bins and publish in releases
