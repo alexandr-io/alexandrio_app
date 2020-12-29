@@ -7,10 +7,10 @@ on:
     types: [published]
 
 jobs:
-  defaults:
-    shell: bash
-
   build:
+    defaults:
+      shell: bash
+
     strategy:
       fail-fast: false
       matrix:
