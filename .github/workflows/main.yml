@@ -59,13 +59,15 @@ jobs:
         java-version: '12.x'
     - uses: subosito/flutter-action@v1  # https://github.com/marketplace/actions/flutter-action
       with:
-        channel: 'dev'
+        channel: 'master'
     - run: flutter config ${{matrix.ENABLE_DESKTOP}} ${{matrix.ENABLE_MOBILE}}
+    - run: flutter clean
+    - run: flutter create .
     - run: flutter pub get
     - run: flutter test
-    - run: flutter build ${{matrix.OS_NAME}}
     - run: flutter build ${{matrix.MOBILE_TARGET}} ${{matrix.MOBILE_ARGS}}
       if: matrix.MOBILE_BUILD == 'true'
+    - run: flutter build ${{matrix.OS_NAME}}
     - run: tree build || echo "Command tree unavailable"  # tmp
 
     # TODO: Upload bins and publish in releases
