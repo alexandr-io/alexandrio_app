@@ -2,7 +2,7 @@ name: Flutter Build
 
 on:
   push:
-  # pull_request:  # enable if repo goes public
+  pull_request:
   release:
     types: [published]
 
@@ -12,47 +12,52 @@ defaults:
 
 jobs:
   build:
-    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]  # macos-latest is really expensive
+        target: ["apk", "ios", "windows", "linux", "macos"]
         include:
-          - os: ubuntu-latest
-            ACTION_NAME: "Desktop Linux + Android"
+          - target: apk
+            os: ubuntu-20.04
             OS_NAME: linux
-            ENABLE_DESKTOP: "--enable-linux-desktop"
-            ENABLE_MOBILE: "--enable-android"
-            MOBILE_BUILD: 'true'
-            MOBILE_NAME: android
-            MOBILE_TARGET: apk
-            MOBILE_ARGS: ""
+            ACTION_NAME: "Android"
+            ENABLE: "--enable-android"
+            ARGS: "--target-platform android-arm,android-arm64,android-x64 --split-per-abi"
 
-          # - os: macos-latest
-          #   ACTION_NAME: "Desktop MacOS + iOS"
-          #   MOBILE_BUILD: 'true'
-          #   OS_NAME: macos
-          #   ENABLE_DESKTOP: "--enable-macos-desktop"
-          #   ENABLE_MOBILE: "--enable-ios"
-          #   MOBILE_NAME: ios
-          #   MOBILE_TARGET: ios
-          #   MOBILE_ARGS: "--no-codesign"
+          - target: ios
+            os: macos-11.0
+            OS_NAME: macos
+            ACTION_NAME: "iOS"
+            ENABLE: "--enable-ios"
+            ARGS: "--no-codesign"
 
-          - os: windows-latest
-            ACTION_NAME: "Desktop Windows"
+          - target: windows
+            os: windows-2019
             OS_NAME: windows
-            ENABLE_DESKTOP: "--enable-windows-desktop"
-            ENABLE_MOBILE: ""
-            MOBILE_BUILD: 'false'
-            MOBILE_NAME: ""
-            MOBILE_TARGET: ""
-            MOBILE_ARGS: ""
+            ACTION_NAME: "Desktop Windows"
+            ENABLE: "--enable-windows-desktop"
+            ARGS: ""
+
+          - target: linux
+            os: ubuntu-20.04
+            OS_NAME: linux
+            ACTION_NAME: "Desktop Linux"
+            ENABLE: "--enable-linux-desktop"
+            ARGS: ""
+
+          - target: macos
+            os: macos-11.0
+            OS_NAME: macos
+            ACTION_NAME: "Desktop MacOS"
+            ENABLE: "--enable-macos-desktop"
+            ARGS: ""
 
     runs-on: ${{matrix.os}}
     name: ${{matrix.ACTION_NAME}}
 
-    # TODO: cache flutter things?
     steps:
+    - run: sudo apt install -y ninja-build
+      if: matrix.target == 'linux'
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
       with:
@@ -62,13 +67,17 @@ jobs:
         channel: 'dev'  # 'master' doesn't work somehow, gotta do it manually...
     - run: flutter channel master && flutter upgrade
     - run: flutter clean
-    - run: flutter config ${{matrix.ENABLE_DESKTOP}} ${{matrix.ENABLE_MOBILE}}
+    - run: flutter config ${{matrix.ENABLE}}
     - run: flutter create .
     - run: flutter pub get
     - run: flutter test
-    - run: flutter build ${{matrix.MOBILE_TARGET}} ${{matrix.MOBILE_ARGS}}
-      if: matrix.MOBILE_BUILD == 'true'
-    - run: flutter build ${{matrix.OS_NAME}}
-    - run: tree build || echo "Command tree unavailable"  # tmp
+    - run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
+  
+    # tmp
+    - run: tree build
+      if: matrix.OS_NAME != 'windows'
+    - run: tree build
+      shell: cmd
+      if: matrix.OS_NAME == 'windows'
 
     # TODO: Upload bins and publish in releases
