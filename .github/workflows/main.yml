@@ -25,7 +25,7 @@ jobs:
             ARGS: "--target-platform android-arm,android-arm64,android-x64 --split-per-abi"
 
           - target: ios
-            os: macos-11.0
+            os: macos-10.15
             OS_NAME: macos
             ACTION_NAME: "iOS"
             ENABLE: "--enable-ios"
@@ -46,7 +46,7 @@ jobs:
             ARGS: ""
 
           - target: macos
-            os: macos-11.0
+            os: macos-10.15
             OS_NAME: macos
             ACTION_NAME: "Desktop MacOS"
             ENABLE: "--enable-macos-desktop"
