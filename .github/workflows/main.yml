@@ -15,21 +15,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]  # macos-latest is really expensive
         include:
           - os: ubuntu-latest
+            ACTION_NAME: "Desktop Linux + Android"
             OS_NAME: linux
             MOBILE_BUILD: true
             MOBILE_NAME: android
             MOBILE_TARGET: apk
             MOBILE_ARGS: ""
           - os: macos-latest
+            ACTION_NAME: "Desktop MacOS + iOS"
             MOBILE_BUILD: true
             OS_NAME: macos
             MOBILE_NAME: ios
             MOBILE_TARGET: ios
             MOBILE_ARGS: "--no-codesign"
           - os: windows-latest
+            ACTION_NAME: "Desktop Windows"
             OS_NAME: windows
             MOBILE_BUILD: false
             MOBILE_NAME: ""
@@ -37,6 +40,9 @@ jobs:
             MOBILE_ARGS: ""
 
     runs-on: ${{matrix.os}}
+    name: ${{matrix.ACTION_NAME}}
+
+    # TODO: cache flutter things
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
@@ -47,11 +53,12 @@ jobs:
         channel: 'dev'
     - run: flutter config --enable-${{matrix.OS_NAME}}-desktop
     - run: flutter config --enable-${{matrix.MOBILE_NAME}}
-      if: matrix.MOBILE_BUILD == true
+      if: matrix.MOBILE_BUILD == 'true'
     - run: flutter pub get
     - run: flutter test
-    - run: flutter build --no-pub ${{matrix.OS_NAME}}
-    - run: flutter build --no-pub ${{matrix.MOBILE_TARGET}} ${{matrix.MOBILE_ARGS}}
-      if: matrix.MOBILE_BUILD == true
+    - run: flutter build ${{matrix.OS_NAME}} --no-pub
+    - run: flutter build ${{matrix.MOBILE_TARGET}} ${{matrix.MOBILE_ARGS}} --no-pub
+      if: matrix.MOBILE_BUILD == 'true'
+    - run: tree build || echo "Command tree unavailable"  # tmp
 
     # TODO: Upload bins and publish in releases
