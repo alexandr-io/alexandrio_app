@@ -12,7 +12,7 @@ defaults:
 
 jobs:
   build:
-    timeout-minutes: 5
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -21,20 +21,28 @@ jobs:
           - os: ubuntu-latest
             ACTION_NAME: "Desktop Linux + Android"
             OS_NAME: linux
+            ENABLE_DESKTOP: "--enable-linux-desktop"
+            ENABLE_MOBILE: "--enable-android"
             MOBILE_BUILD: 'true'
             MOBILE_NAME: android
             MOBILE_TARGET: apk
             MOBILE_ARGS: ""
+
           # - os: macos-latest
           #   ACTION_NAME: "Desktop MacOS + iOS"
           #   MOBILE_BUILD: 'true'
           #   OS_NAME: macos
+          #   ENABLE_DESKTOP: "--enable-macos-desktop"
+          #   ENABLE_MOBILE: "--enable-ios"
           #   MOBILE_NAME: ios
           #   MOBILE_TARGET: ios
           #   MOBILE_ARGS: "--no-codesign"
+
           - os: windows-latest
             ACTION_NAME: "Desktop Windows"
             OS_NAME: windows
+            ENABLE_DESKTOP: "--enable-windows-desktop"
+            ENABLE_MOBILE: ""
             MOBILE_BUILD: 'false'
             MOBILE_NAME: ""
             MOBILE_TARGET: ""
@@ -52,9 +60,7 @@ jobs:
     - uses: subosito/flutter-action@v1  # https://github.com/marketplace/actions/flutter-action
       with:
         channel: 'dev'
-    - run: flutter config --enable-${{matrix.OS_NAME}}-desktop
-    - run: flutter config --enable-${{matrix.MOBILE_NAME}}
-      if: matrix.MOBILE_BUILD == 'true'
+    - run: flutter config ${{matrix.ENABLE_DESKTOP}} ${{matrix.ENABLE_MOBILE}}
     - run: flutter pub get
     - run: flutter test
     - run: flutter build ${{matrix.OS_NAME}}
