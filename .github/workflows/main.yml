@@ -84,7 +84,7 @@ jobs:
       run: flutter test
 
     - name: Build
-      run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
+      run: flutter build -v ${{matrix.target}} ${{matrix.ARGS}}
   
     # tmp
     - name: List build directory
