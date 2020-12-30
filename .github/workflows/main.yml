@@ -2,7 +2,17 @@ name: Flutter Build
 
 on:
   push:
+    branches:
+      - main
+      - master
+      - dev
+      - develop
   pull_request:
+    branches:
+      - main
+      - master
+      - dev
+      - develop
   release:
     types: [published]
 
@@ -89,5 +99,6 @@ jobs:
     # tmp
     - name: List build directory
       run: find build
+      if: always()
 
     # TODO: Upload bins and publish in releases
