@@ -4,8 +4,8 @@ import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import 'Login.dart';
 import '../App.dart';
-import '../backend/User.dart';
 // import '../backend/Connection.dart';
 // import '../backend/APIConnector.dart';
 
@@ -69,19 +69,18 @@ class LoginPasswordState extends State<LoginPassword> {
                 RaisedButton(
                   child: Text("Next"),
                   onPressed: () async {
-                    User newUser = await api.login(widget.login, passwordController.text);
-                    inspect(newUser);
-                    if (newUser?.authToken != null || newUser?.refreshToken != null ) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => Home(
-                            user: newUser,
+                    await api.login(widget.login, passwordController.text).then((response) => {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => Home(
+                              user: response,
+                            ),
                           ),
-                        ),
-                      );
-                    } else {
-                      print("An error occured, please retry");
-                    }
+                        )
+                    }).catchError((e) {
+                      print(e);
+                      _showMyDialog();
+                    });
                   },
                   elevation: 0.0,
                 ),
@@ -91,6 +90,38 @@ class LoginPasswordState extends State<LoginPassword> {
         ),
       );
   }
+
+  Future<void> _showMyDialog() async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('An error occured...'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Your login or password is incorrect'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Login()
+                )
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 }
 
 class LoginPassword extends StatefulWidget {

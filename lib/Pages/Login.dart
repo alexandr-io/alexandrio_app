@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'LoginPassword.dart';
 import 'Register.dart';
 
-class Login extends StatelessWidget {
+class LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
@@ -97,4 +97,16 @@ class Login extends StatelessWidget {
         ),
       );
   }
+}
+
+class Login extends StatefulWidget {
+    final bool showError;
+
+  const Login({
+    Key key,
+    this.showError,
+  }) : super(key: key);
+
+  @override
+  LoginState createState() => LoginState();
 }

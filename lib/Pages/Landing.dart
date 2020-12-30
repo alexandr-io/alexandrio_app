@@ -42,7 +42,9 @@ class Landing extends StatelessWidget {
                 child: Text("Get started"),
                 onPressed: () async => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => Login(),
+                    builder: (BuildContext context) => Login(
+                      showError: false
+                    ),
                   ),
                 ),
                 elevation: 0.0,
