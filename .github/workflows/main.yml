@@ -32,7 +32,7 @@ jobs:
             OS_NAME: linux
             ACTION_NAME: "Android"
             ENABLE: "--enable-android"
-            ARGS: "--target-platform android-arm,android-arm64,android-x64 --split-per-abi"
+            ARGS: ""  # for store release, use "--target-platform android-arm,android-arm64,android-x64 --split-per-abi"
 
           - target: ios
             os: macos-10.15
@@ -95,10 +95,27 @@ jobs:
 
     - name: Build
       run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
-  
+
     # tmp
     - name: List build directory
       run: find build
       if: always()
 
-    # TODO: Upload bins and publish in releases
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ env.RELEASE_NAME }}
+    #     path:
+    #     retention-days: 7
+    #     if-no-files-found: error
+
+    # - name: Upload Artifact to Release
+    #   uses: actions/upload-release-asset@v1.0.1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #       upload_url: ${{ github.event.release.upload_url }}
+    #       asset_path:
+    #       asset_name:
+    #       asset_content_type: 
+    #   if: github.event_name == 'release' && github.event.action == 'published'
