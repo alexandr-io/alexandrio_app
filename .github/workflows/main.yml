@@ -34,7 +34,7 @@ jobs:
             ENABLE: "--enable-android"
             ARGS: ""  # for store release, use "--target-platform android-arm,android-arm64,android-x64 --split-per-abi"
             ARTIFACT_PATH: "build/app/outputs/apk/release/app-release.apk"
-            ARTIFACT_NAME: "Release-Android.apk"
+            ARTIFACT_NAME: "Release-Android"
 
           - target: ios
             os: macos-10.15
@@ -42,7 +42,7 @@ jobs:
             ACTION_NAME: "iOS"
             ENABLE: "--enable-ios"
             ARGS: "--no-codesign"
-            ARTIFACT_PATH: "build/ios/Release-iphoneos"
+            ARTIFACT_PATH: "build/ios/Release-iphoneos/Runner.app"
             ARTIFACT_NAME: "Release-iOS"
 
           - target: windows
@@ -69,7 +69,7 @@ jobs:
             ACTION_NAME: "Desktop MacOS"
             ENABLE: "--enable-macos-desktop"
             ARGS: ""
-            ARTIFACT_PATH: "build/macos/Build/Products/Release"
+            ARTIFACT_PATH: "build/macos/Build/Products/Release/alexandrio_app.app"
             ARTIFACT_NAME: "Release-MacOS"
 
     runs-on: ${{matrix.os}}
