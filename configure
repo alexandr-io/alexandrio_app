@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+clean() {
+    flutter clean
+    rm -rf windows/ linux/ macos/ web/ android/ ios/ build/ integration_test/
+}
+
+refresh() {
+    clean
+    flutter config --enable-windows-desktop --enable-linux-desktop --enable-macos-desktop
+    flutter create .
+    flutter pub get
+}
+
+setup() {
+    flutter channel master
+    flutter upgrade
+    refresh
+}
+
+ERROR_USAGE="usage: $0 <setup|clean|refresh>"
+
+if [[ $# == 0 ]]; then
+    echo "$ERROR_USAGE" 1>&2
+    exit 1
+fi
+
+if [[ $1 == 'clean' ]]; then
+    set -xe
+
+    clean
+elif [[ $1 == 'setup' ]]; then
+    set -xe
+
+    setup
+elif [[ $1 == 'refresh' ]]; then
+    set -xe
+
+    refresh
+else
+    echo "$ERROR_USAGE" 1>&2
+    exit 2
+fi
