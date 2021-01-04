@@ -238,7 +238,6 @@ class APIConnector {
     final response = await http.get(
       endpoints[1] + '/user',
       headers: {
-        "Content-Type": "application/json",
         "Authorization": "Bearer " + user.authToken,
       }
     );
@@ -349,7 +348,6 @@ class APIConnector {
     final response = await http.get(
       endpoints[2] + '/libraries',
       headers: {
-        "Content-Type": "application/json",
         "Authorization": "Bearer" + authToken,
       }
     );
@@ -390,12 +388,10 @@ class APIConnector {
 
   // MEDIA RELATED CALLS
 
-  Future<void> download(String bookId) async {
+  // Future<void> download(String bookId) async {
+  // }
 
-  }
-
-  Future<void> upload(String book, String bookId, String libraryId) async {
-
-  }
+  // Future<void> upload(String book, String bookId, String libraryId) async {
+  // }
 
 }
