@@ -8,6 +8,10 @@
       "name": "Flutter",
       "request": "launch",
       "type": "dart",
+      "args": [
+        "--no-sound-null-safety",
+        "--dart-define=FLUTTER_WEB_USE_SKIA=true",
+      ]
     },
     {
       "name": "Flutter Web",
@@ -16,8 +20,8 @@
       "deviceId": "chrome",
       "flutterMode": "profile",
       "args": [
+        "--no-sound-null-safety",
         "--dart-define=FLUTTER_WEB_USE_SKIA=true",
-        "--verbose"
       ]
     },
     {
@@ -26,6 +30,7 @@
       "type": "dart",
       "deviceId": "windows",
       "args": [
+        "--no-sound-null-safety",
         "--dart-define=FLUTTER_WEB_USE_SKIA=true",
       ]
     }
