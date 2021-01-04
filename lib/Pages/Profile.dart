@@ -72,7 +72,7 @@ class ProfileState extends State<Profile> {
                 )
               ),
               RaisedButton(
-                child: Text('Update Profile'),
+                child: Text('Mettre à jour'),
                 onPressed: () async { 
                   await api.updateUser(emailController.text, usernameController.text, widget.user.authToken).then((response) async => {
                     await api.getUser(widget.user).then((response) => {
@@ -83,7 +83,13 @@ class ProfileState extends State<Profile> {
                             ),
                           ),
                       )
+                    }).catchError((e) {
+                    print(e);
+                    _showMyDialog();
                     })
+                  }).catchError((e) {
+                    print(e);
+                    _showMyDialog();
                   });
                 },
               ),
@@ -91,6 +97,38 @@ class ProfileState extends State<Profile> {
           )
         ),
       )
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('An error occured...'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Internal server error, please retry'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Profile(user: widget.user)
+                )
+              );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

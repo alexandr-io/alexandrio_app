@@ -384,14 +384,4 @@ class APIConnector {
     if (response.statusCode != 200)
       throw Exception(response.body);    
   } // POST
-  // to do: Add LIBRARY type
-
-  // MEDIA RELATED CALLS
-
-  // Future<void> download(String bookId) async {
-  // }
-
-  // Future<void> upload(String book, String bookId, String libraryId) async {
-  // }
-
 }
