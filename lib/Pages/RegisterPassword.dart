@@ -13,6 +13,7 @@ class RegisterPasswordState extends State<RegisterPassword> {
     var api = context.findAncestorStateOfType<AppState>().api;
     var passwordController = TextEditingController();
     var confirmPasswordController = TextEditingController();
+    var invitationController = TextEditingController();
 
       return Scaffold(
         body: SingleChildScrollView(
@@ -65,6 +66,18 @@ class RegisterPasswordState extends State<RegisterPassword> {
                     controller: confirmPasswordController,
                   ),
                 ),
+                SizedBox.fromSize(size: Size.fromHeight(24.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Invitation code",
+                    ),
+                    controller: invitationController,
+                  ),
+                ),
               ],
             ),
           ),
@@ -79,7 +92,7 @@ class RegisterPasswordState extends State<RegisterPassword> {
                 RaisedButton(
                   child: Text("Next"),
                   onPressed: () async {
-                    await api.register(widget.login, widget.email, passwordController.text, confirmPasswordController.text).then((response) => {
+                    await api.register(widget.login, widget.email, passwordController.text, confirmPasswordController.text, invitationController.text).then((response) => {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) => Home(

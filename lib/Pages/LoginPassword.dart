@@ -13,7 +13,6 @@ class LoginPasswordState extends State<LoginPassword> {
   @override
   Widget build(BuildContext context) {
     var api = context.findAncestorStateOfType<AppState>().api;
-    var app = context.findAncestorStateOfType<AppState>();
     var passwordController = TextEditingController();
 
       return Scaffold(

@@ -8,7 +8,16 @@ import "Error.dart";
 
 class APIConnector {
   var headers = {};
-  var endpoint = "http://auth.preprod.alexandrio.cloud";
+  List<String> endpoints = [
+    "http://auth.preprod.alexandrio.cloud",
+    "http://user.preprod.alexandrio.cloud",
+    "http://library.preprod.alexandrio.cloud",
+    "http://media.preprod.alexandrio.cloud",
+    "http://auth.alexandrio.cloud",
+    "http://user.alexandrio.cloud",
+    "http://library.alexandrio.cloud",
+    "http://media.alexandrio.cloud",
+  ];
 
   User user;
 
@@ -16,7 +25,7 @@ class APIConnector {
 
   Future<void> auth() async {
     final response = await http.get(
-      endpoint + '/auth',
+      endpoints[0] + '/auth',
       headers: {
         "Content-Type": "application/json",
       },
@@ -31,7 +40,7 @@ class APIConnector {
 
   Future<User> login( String username,  String password) async {
     final response = await http.post(
-      endpoint + '/login',
+      endpoints[0] + '/login',
       body: jsonEncode(
         {
           'login': username,
@@ -59,9 +68,9 @@ class APIConnector {
 
   Future<void> logout(String authToken) async {
     final response = await http.post(
-      endpoint + '/logout',
+      endpoints[0] + '/logout',
       headers: {
-        "Authorization": "Bearer" + authToken,
+        "Authorization": "Bearer " + authToken,
       },
     );
 
@@ -72,7 +81,7 @@ class APIConnector {
 
   Future<bool> checkReset(User user, String token) async {
     final response = await http.get(
-      endpoint + '/password/reset',
+      endpoints[0] + '/password/reset',
       headers: {
         "Content-Type": "application/json",
       },
@@ -89,7 +98,7 @@ class APIConnector {
 
   Future<void> askReset(String email) async {
     final response = await http.post(
-      endpoint + '/password/reset',
+      endpoints[0] + '/password/reset',
       body: jsonEncode(
         {
           'email': email,
@@ -106,7 +115,7 @@ class APIConnector {
 
   Future<User> reset(String newPassword, String token) async {
     final response = await http.put(
-      endpoint + '/password/reset',
+      endpoints[0] + '/password/reset',
       body: jsonEncode(
         {
           'new_password': newPassword,
@@ -133,7 +142,7 @@ class APIConnector {
 
   Future<User> refresh(String refreshToken) async {
     final response = await http.put(
-      endpoint + '/password/reset',
+      endpoints[0] + '/password/reset',
       body: jsonEncode(
         {
           'refresh_token': refreshToken,
@@ -157,13 +166,14 @@ class APIConnector {
     );
   } // POST
 
-  Future<User> register( String username,  String email,  String password,  String confirmPassword) async {
+  Future<User> register( String username,  String email,  String password,  String confirmPassword, String invitation) async {
     final response = await http.post(
-      endpoint + '/register',
+      endpoints[0] + '/register',
       body: jsonEncode(
         {
           'username': username,
           'email': email,
+          'invitation_token': invitation,
           'password': password,
           'confirm_password': confirmPassword,
         },
@@ -190,10 +200,10 @@ class APIConnector {
 
   Future<void> refreshToken( User user) async {
     final response = await http.post(
-      endpoint + '/auth/refresh',
+      endpoints[0] + '/auth/refresh',
       headers: {
-        "Contentr-Type": "application/json",
-        "Authorization": "Bearer" + user.authToken,
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + user.authToken,
       },
     );
 
@@ -214,9 +224,9 @@ class APIConnector {
 
   Future<void> deleteUser(String authToken) async {
     final response = await http.delete(
-      endpoint + '/user',
+      endpoints[1] + '/user',
       headers: {
-        "Authorization": "Bearer" + authToken,
+        "Authorization": "Bearer " + authToken,
       }
     );
 
@@ -224,11 +234,12 @@ class APIConnector {
       throw Exception(response.body);    
   }
 
-  Future<User> getUser(String authToken) async {
+  Future<User> getUser(User user) async {
     final response = await http.get(
-      endpoint + '/user',
+      endpoints[1] + '/user',
       headers: {
-        "Authorization": "Bearer" + authToken,
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + user.authToken,
       }
     );
 
@@ -240,14 +251,14 @@ class APIConnector {
     return User(
       username: decodedResponse['username'],
       email: decodedResponse['email'],
-      authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      authToken: user.authToken,
+      refreshToken: user.refreshToken, 
     );
   }
 
   Future<bool> updateUser(String email, String username, String authToken) async {
     final response = await http.put(
-      endpoint + '/user',
+      endpoints[1] + '/user',
       body: jsonEncode(
         {
           'username': username,
@@ -255,48 +266,125 @@ class APIConnector {
         },
       ),
       headers: {
-        "Authorization": "Bearer" + authToken,
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authToken,
       },
     );
 
-    if (response.statusCode != 200)
+    if (response.statusCode != 200) {
+      print(response.body);
       throw Exception(response.body);
+    }
 
+    print("Update success");
     return true;
   }
 
   // LIBRARY RELATED CALLS
 
-  Future<void> deleteBook(String bookId, String libraryId) async {
+  // NO body with DELETE
+  // Future<void> deleteBook(String authToken, String bookId, String libraryId) async {
+  //   final response = await http.delete(
+  //     endpoints[2] + '/book',
+  //     // body: jsonEncode(
+  //     //   {
+  //     //     'book_id': bookId,
+  //     //     'library_id': libraryId,
+  //     //   },
+  //     // ),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Authorization": "Bearer" + authToken,
+  //     }
+  //   );
 
-  } // DELETE
+  //   if (response.statusCode != 200)
+  //     throw Exception(response.body);
 
-  Future<void> retrieveBook(String bookId, String libraryId) async {
+  // } // DELETE
 
-  } // GET
+  // NO body with GET
+  // Future<void> retrieveBook(String authToken, String bookId, String libraryId) async {
+  //   final response = await http.get(
+  //     endpoints[2] + '/book',
+  //     body: jsonEncode(
+  //       {
+  //         'book_id': bookId,
+  //         'library_id': libraryId,
+  //       },
+  //     ),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Authorization": "Bearer" + authToken,
+  //     }
+  //   );
+  // } // GET
   // to do: Add BOOK type
 
-  Future<void> createBook(String author, String description, String libraryId, String publisher, List<String> tags, String title) async {
+  Future<void> createBook(String authToken, String author, String description, String libraryId, String publisher, List<String> tags, String title) async {
+    final response = await http.post(
+      endpoints[2] + '/book',
+      body: jsonEncode(
+        {
+          'author': author,
+          'description': description,
+          'library_id': libraryId,
+          'publisher': publisher,
+          'tags': tags,
+          'title': title,
+        },
+      ),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer" + authToken,
+      }
+    );
 
+    if (response.statusCode != 200)
+      throw Exception(response.body);
   } // POST
   // to do: Add BOOK type
 
   Future<void> retrieveLibraries(String authToken) async {
+    final response = await http.get(
+      endpoints[2] + '/libraries',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer" + authToken,
+      }
+    );
 
+    if (response.statusCode != 200)
+      throw Exception(response.body);
   } // GET
   // to do: Add LIBRARY type
 
-  Future<void> deleteLibrary(String name) async {
+  // Future<void> deleteLibrary(String name) async {
 
-  } // DELETE
+  // } // DELETE
 
-  Future<void> retrieveLibrary(String name) async {
+  // Future<void> retrieveLibrary(String name) async {
 
-  } // GET
-  // to do: Add LIBRARY type
+  // } // GET
+  // // to do: Add LIBRARY type
 
-  Future<void> createLibrary(String description, String name) async {
+  Future<void> createLibrary(String authToken, String description, String name) async {
+    final response = await http.post(
+      endpoints[2] + '/libraries',
+      body: jsonEncode(
+        {
+          'name': name,
+          'description': description,
+        },
+      ),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer" + authToken,
+      }
+    );
 
+    if (response.statusCode != 200)
+      throw Exception(response.body);    
   } // POST
   // to do: Add LIBRARY type
 
