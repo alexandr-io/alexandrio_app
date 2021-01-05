@@ -14,6 +14,15 @@
       ]
     },
     {
+      "name": "Flutter2",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--no-sound-null-safety",
+        "--dart-define=FLUTTER_WEB_USE_SKIA=true",
+      ]
+    },
+    {
       "name": "Flutter Web",
       "request": "launch",
       "type": "dart",

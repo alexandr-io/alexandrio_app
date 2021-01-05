@@ -71,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   crypto:
     dependency: transitive
     description:
@@ -120,25 +127,52 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
-  file_picker:
+  file_selector:
     dependency: "direct main"
     description:
-      name: file_picker
+      name: file_selector
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.4"
+    version: "0.7.0"
+  file_selector_linux:
+    dependency: "direct main"
+    description:
+      path: "plugins/file_selector/file_selector_linux"
+      ref: HEAD
+      resolved-ref: "2b9353a5706f8a3423da6c8194607c7e64b66b19"
+      url: "https://github.com/google/flutter-desktop-embedding"
+    source: git
+    version: "0.0.1"
+  file_selector_macos:
+    dependency: "direct main"
+    description:
+      path: "plugins/file_selector/file_selector_macos"
+      ref: HEAD
+      resolved-ref: "2b9353a5706f8a3423da6c8194607c7e64b66b19"
+      url: "https://github.com/google/flutter-desktop-embedding"
+    source: git
+    version: "0.0.1"
+  file_selector_platform_interface:
+    dependency: transitive
+    description:
+      name: file_selector_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  file_selector_windows:
+    dependency: "direct main"
+    description:
+      path: "plugins/file_selector/file_selector_windows"
+      ref: HEAD
+      resolved-ref: "2b9353a5706f8a3423da6c8194607c7e64b66b19"
+      url: "https://github.com/google/flutter-desktop-embedding"
+    source: git
+    version: "0.0.1"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_plugin_android_lifecycle:
-    dependency: transitive
-    description:
-      name: flutter_plugin_android_lifecycle
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.11"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -398,4 +432,4 @@ packages:
     version: "4.5.1"
 sdks:
   dart: ">=2.12.0-0.0 <3.0.0"
-  flutter: ">=1.12.13+hotfix.5 <2.0.0"
+  flutter: ">=1.22.0 <2.0.0"

@@ -25,20 +25,17 @@ class APIConnector {
     }
   }
 
-  Future<User> login( String username,  String password) async {
-    final response = await http.post(
-      endpoint + '/login',
-      body: jsonEncode(
-        {
-          'login': username,
-          'password': password,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    );
-
+  Future<User> login(String username, String password) async {
+    final response = await http.post(endpoint + '/login',
+        body: jsonEncode(
+          {
+            'login': username,
+            'password': password,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+        });
 
     var decodedResponse = json.decode(response.body);
 
@@ -46,28 +43,26 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   }
 
-  Future<User> register( String username,  String email,  String password,  String confirmPassword) async {
-    final response = await http.post(
-      endpoint + '/register',
-      body: jsonEncode(
-        {
-          'username': username,
-          'email': email,
-          'password': password,
-          'confirm_password': confirmPassword,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    );
+  Future<User> register(String username, String email, String password, String confirmPassword) async {
+    final response = await http.post(endpoint + '/register',
+        body: jsonEncode(
+          {
+            'username': username,
+            'email': email,
+            'password': password,
+            'confirm_password': confirmPassword,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+        });
 
     var decodedResponse = json.decode(response.body);
-    
+
     if (response.statusCode == 200) {
       print(json.decode(response.body));
     } else {
@@ -78,11 +73,11 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   }
 
-  Future<void> refreshToken( User user) async {
+  Future<void> refreshToken(User user) async {
     final response = await http.post(
       endpoint + '/auth/refresh',
       headers: {

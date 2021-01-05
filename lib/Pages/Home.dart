@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:demo/Components/UI/AppBarBlur.dart';
 import 'package:demo/Pages/Test.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -195,6 +197,7 @@ class HomeState extends State<Home> {
         'Authorization': 'Bearer ${widget.user.authToken}',
       },
     );
+
     // var headers = {'Authorization': 'Bearer ${widget.user.authToken}', 'Content-Type': 'application/json'};
     // var request = http.Request('GET', 'http://library.preprod.alexandrio.cloud/library');
     // request.body = '''{"name": "Bookshelf"}''';
@@ -233,54 +236,6 @@ class HomeState extends State<Home> {
               ),
             )
           : searchAppBar(tabletMode),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.file_upload),
-        label: Text("Upload"),
-        onPressed: () async {
-          // var req = await http.post(
-          //   'http://auth.preprod.alexandrio.cloud/book/upload',
-          //   body: {
-          //     book:
-          //   },
-          // );
-
-          var req = await http.post(
-            'http://library.preprod.alexandrio.cloud/book',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ${widget.user.authToken}',
-            },
-            body: jsonEncode({
-              // 'author': null,
-              // 'description': null,
-              'library_id': '5fe1f538131c113239b9c46d',
-              // 'publisher': null,
-              // 'tags': null,
-              'title': 'THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf',
-            }),
-          );
-
-          print(jsonDecode(req.body));
-
-          var request = http.MultipartRequest(
-            'POST',
-            Uri.parse('http://media.preprod.alexandrio.cloud/book/upload'),
-          );
-          request.files.add(
-            await http.MultipartFile.fromPath(
-              'book',
-              'assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf',
-            ),
-          );
-          request.fields['book'] = (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();
-          request.fields['book_id'] = jsonDecode(req.body)['id'];
-          request.fields['library_id'] = '5fe1f538131c113239b9c46d';
-          request.headers['Authorization'] = 'Bearer ${widget.user.authToken}';
-          var res = await request.send();
-          var wow = res.toString();
-          print(res);
-        },
-      ),
       body: Row(
         children: [
           if (tabletMode && drawerOpen)
@@ -303,10 +258,75 @@ class HomeState extends State<Home> {
                     children: [
                       for (var library in jsonResponse['libraries'])
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(library['name']),
-                            Text(library['id']),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Text(
+                                    library['name'],
+                                    style: Theme.of(context).textTheme.headline5,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: FlatButton.icon(
+                                    onPressed: () async {
+                                      // var file = await FilePicker.platform.pickFiles(
+                                      //   type: FileType.custom,
+                                      //   allowedExtensions: ['pdf'],
+                                      // );
+                                      // if (file == null) return;
+                                      final typeGroup = XTypeGroup(extensions: ['pdf']);
+                                      final file = await openFile(acceptedTypeGroups: [typeGroup]);
+                                      if (file == null) return;
+
+                                      var req = await http.post(
+                                        'http://library.preprod.alexandrio.cloud/book',
+                                        headers: {
+                                          'Content-Type': 'application/json',
+                                          'Authorization': 'Bearer ${widget.user.authToken}',
+                                        },
+                                        body: jsonEncode({
+                                          'title': file.name,
+                                          'library_id': '5fe1f538131c113239b9c46d',
+                                        }),
+                                      );
+
+                                      print(jsonDecode(req.body));
+
+                                      var request = http.MultipartRequest(
+                                        'POST',
+                                        Uri.parse('http://media.preprod.alexandrio.cloud/book/upload'),
+                                      );
+                                      request.files.add(
+                                        await http.MultipartFile.fromPath(
+                                          'book',
+                                          file.path,
+                                        ),
+                                      );
+                                      // request.fields['book'] = file.files.first.bytes.toString(); // (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();
+                                      request.fields['book_id'] = jsonDecode(req.body)['id'];
+                                      request.fields['library_id'] = '5fe1f538131c113239b9c46d';
+                                      request.headers['Authorization'] = 'Bearer ${widget.user.authToken}';
+                                      var res = await request.send();
+                                      var wow = res.toString();
+                                      print(res);
+                                    },
+                                    icon: Icon(Icons.upload_file),
+                                    label: Text('Upload'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              height: 1.0,
+                              color: Theme.of(context).dividerColor,
+                            ),
                             FutureBuilder<http.Response>(
                               future: http.put(
                                 'http://library.preprod.alexandrio.cloud/library', // John: test
@@ -326,9 +346,12 @@ class HomeState extends State<Home> {
                                     children: [
                                       for (var book in jsonResponse['books'])
                                         InkWell(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text('${book['title']} : ${book['id']}'),
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12.0),
+                                              child: Text('${book['title']}'),
+                                            ),
                                           ),
                                           onTap: () async {
                                             var response = await http.put(
@@ -341,8 +364,6 @@ class HomeState extends State<Home> {
                                                 'book_id': book['id'].toString(),
                                               }),
                                             );
-
-                                            print('${response.body}');
 
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
@@ -368,19 +389,6 @@ class HomeState extends State<Home> {
                 return Text('Loading...');
               },
             ),
-            // child: GridView.extent(
-            //   maxCrossAxisExtent: 175,
-            //   childAspectRatio: 9.0 / 16.0,
-            //   children: List.generate(
-            //     100,
-            //     (index) => Padding(
-            //       padding: const EdgeInsets.all(0.0),
-            //       child: BookCard(
-            //         book: test[Random().nextInt(test.length)],
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ),
         ],
       ),
