@@ -23,5 +23,3 @@ else
     set -xe
     zip -r $HOME/$RELEASE_NAME.zip $PATHS
 fi
-
-ls -l \"$HOME/$RELEASE_NAME.zip\"
