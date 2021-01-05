@@ -123,6 +123,8 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var api = context.findAncestorStateOfType<AppState>().api;
+
     return Drawer(
       elevation: tabletMode ? 0.0 : 16.0,
       child: ListView(
@@ -175,9 +177,11 @@ class AppDrawer extends StatelessWidget {
               leading: Icon(Icons.exit_to_app),
               title: Text("Deconnexion"),
               onTap: () async {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => Login(),
-                ));
+                await api.logout(user.authToken).then((response) => {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Login(),
+                  ))
+                });
               })
         ],
       ),

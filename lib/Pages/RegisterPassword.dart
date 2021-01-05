@@ -4,8 +4,8 @@ import 'package:demo/Components/Logo.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import 'Register.dart';
 import '../App.dart';
-import '../backend/User.dart';
 
 class RegisterPasswordState extends State<RegisterPassword> {
   @override
@@ -13,6 +13,7 @@ class RegisterPasswordState extends State<RegisterPassword> {
     var api = context.findAncestorStateOfType<AppState>().api;
     var passwordController = TextEditingController();
     var confirmPasswordController = TextEditingController();
+    var invitationController = TextEditingController();
 
       return Scaffold(
         body: SingleChildScrollView(
@@ -65,6 +66,35 @@ class RegisterPasswordState extends State<RegisterPassword> {
                     controller: confirmPasswordController,
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                  child: Text(
+                    "Invitation token",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 8.0,
+                  ),
+                  child: Text(
+                    "Add your invitation token",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                SizedBox.fromSize(size: Size.fromHeight(24.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Invitation code",
+                    ),
+                    controller: invitationController,
+                  ),
+                ),
               ],
             ),
           ),
@@ -79,18 +109,18 @@ class RegisterPasswordState extends State<RegisterPassword> {
                 RaisedButton(
                   child: Text("Next"),
                   onPressed: () async {
-                    User newUser = await api.register(widget.login, widget.email, passwordController.text, confirmPasswordController.text);
-                    if (newUser?.authToken != null || newUser?.refreshToken != null) {
+                    await api.register(widget.login, widget.email, passwordController.text, confirmPasswordController.text, invitationController.text).then((response) => {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) => Home(
-                            user: newUser,
+                            user: response,
                           ),
                         ),
-                      );
-                    } else {
-                      print("An error occured, please retry");
-                    }
+                      )
+                    }).catchError((e) {
+                      print(e);
+                      _showMyDialog();
+                    });
                   },
                   elevation: 0.0,
                 ),
@@ -99,6 +129,38 @@ class RegisterPasswordState extends State<RegisterPassword> {
           ),
         ),
       );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('An error occured...'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Internal server error, please retry'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => Register()
+                )
+              );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
