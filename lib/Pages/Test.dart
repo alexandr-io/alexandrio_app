@@ -34,26 +34,29 @@ class TestPageState extends State<TestPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Stack(
-          children: [
-            FutureBuilder(
-              future: getPages(),
-              builder: (context, state) {
-                if (state.hasData) {
-                  return ListView(
-                    children: state.data,
-                  );
-                }
-                return Center(
-                  child: const CircularProgressIndicator(),
-                );
-              },
-            ),
-            OutlineButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Back'),
-            ),
-          ],
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async => Navigator.of(context).pop(),
+          child: Icon(Icons.chevron_left),
+          mini: true,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
+        body: FutureBuilder(
+          future: getPages(),
+          builder: (context, state) {
+            if (state.hasData) {
+              return Container(
+                color: Colors.white,
+                child: ListView(
+                  children: state.data,
+                ),
+              );
+            }
+            return Center(
+              child: const CircularProgressIndicator(),
+            );
+          },
         ),
       );
 }
@@ -112,24 +115,27 @@ class TestPage2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Stack(
-          children: [
-            FutureBuilder(
-              future: _raster(),
-              builder: (context, state) {
-                if (state.hasData) {
-                  return ListView(
-                    children: pages,
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
-            OutlineButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Back'),
-            ),
-          ],
+        appBar: AppBar(),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              FutureBuilder(
+                future: _raster(),
+                builder: (context, state) {
+                  if (state.hasData) {
+                    return ListView(
+                      children: pages,
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+              OutlineButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Back'),
+              ),
+            ],
+          ),
         ),
       );
 }
