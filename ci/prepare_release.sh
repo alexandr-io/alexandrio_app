@@ -18,8 +18,8 @@ if [[ "$TARGET" == "windows" ]]; then
     set -xe
 
     PATHS=$(join ',' ${PATHS[@]})
-    echo "Compress-Archive -Path $PATHS -DestinationPath \"$HOME/$RELEASE_NAME.zip\"" | powershell
+    echo "Compress-Archive -Path $PATHS -DestinationPath \"$RELEASE_NAME.zip\"" | powershell
 else
     set -xe
-    zip -r $HOME/$RELEASE_NAME.zip $PATHS
+    zip -r $RELEASE_NAME.zip $PATHS
 fi
