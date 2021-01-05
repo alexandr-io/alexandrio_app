@@ -281,7 +281,6 @@ class APIConnector {
 
   // LIBRARY RELATED CALLS
 
-  // NO body with DELETE
   // Future<void> deleteBook(String authToken, String bookId, String libraryId) async {
   //   final response = await http.delete(
   //     endpoints[2] + '/book',
@@ -302,7 +301,6 @@ class APIConnector {
 
   // } // DELETE
 
-  // NO body with GET
   // Future<void> retrieveBook(String authToken, String bookId, String libraryId) async {
   //   final response = await http.get(
   //     endpoints[2] + '/book',

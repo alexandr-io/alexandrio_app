@@ -53,7 +53,7 @@ class ProfileState extends State<Profile> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -63,7 +63,7 @@ class ProfileState extends State<Profile> {
                 )
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
