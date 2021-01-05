@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:demo/Components/UI/AppBarBlur.dart';
 import 'package:demo/Pages/Test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../Components/Logo.dart';
 import '../Components/UI/AppBarPadding.dart';
@@ -17,6 +18,8 @@ import 'Profile.dart';
 import 'Login.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:http/src/multipart_file.dart' as http;
+import 'package:http/src/multipart_request.dart' as http;
 
 AppBarPadding searchAppBar(bool tabletMode) => AppBarPadding(
       padding: EdgeInsets.symmetric(
@@ -159,15 +162,15 @@ class AppDrawer extends StatelessWidget {
               ),
             )),
           ),
-          ListTile(
-            leading: Icon(Icons.book),
-            title: Text("Book test"),
-            onTap: () async => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => TestPage(),
-              ),
-            ),
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.book),
+          //   title: Text("Book test"),
+          //   onTap: () async => Navigator.of(context).push(
+          //     MaterialPageRoute(
+          //       builder: (BuildContext context) => TestPage(),
+          //     ),
+          //   ),
+          // ),
           ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text("Deconnexion"),
@@ -233,7 +236,50 @@ class HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.file_upload),
         label: Text("Upload"),
-        onPressed: () async {},
+        onPressed: () async {
+          // var req = await http.post(
+          //   'http://auth.preprod.alexandrio.cloud/book/upload',
+          //   body: {
+          //     book:
+          //   },
+          // );
+
+          var req = await http.post(
+            'http://library.preprod.alexandrio.cloud/book',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ${widget.user.authToken}',
+            },
+            body: jsonEncode({
+              // 'author': null,
+              // 'description': null,
+              'library_id': '5fe1f538131c113239b9c46d',
+              // 'publisher': null,
+              // 'tags': null,
+              'title': 'THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf',
+            }),
+          );
+
+          print(jsonDecode(req.body));
+
+          var request = http.MultipartRequest(
+            'POST',
+            Uri.parse('http://media.preprod.alexandrio.cloud/book/upload'),
+          );
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'book',
+              'assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf',
+            ),
+          );
+          request.fields['book'] = (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();
+          request.fields['book_id'] = jsonDecode(req.body)['id'];
+          request.fields['library_id'] = '5fe1f538131c113239b9c46d';
+          request.headers['Authorization'] = 'Bearer ${widget.user.authToken}';
+          var res = await request.send();
+          var wow = res.toString();
+          print(res);
+        },
       ),
       body: Row(
         children: [
@@ -261,7 +307,7 @@ class HomeState extends State<Home> {
                           children: [
                             Text(library['name']),
                             Text(library['id']),
-                            FutureBuilder(
+                            FutureBuilder<http.Response>(
                               future: http.put(
                                 'http://library.preprod.alexandrio.cloud/library', // John: test
                                 headers: {
@@ -292,11 +338,20 @@ class HomeState extends State<Home> {
                                                 'Authorization': 'Bearer ${widget.user.authToken}',
                                               },
                                               body: jsonEncode({
-                                                'book_id': book['id'],
+                                                'book_id': book['id'].toString(),
                                               }),
                                             );
 
                                             print('${response.body}');
+
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (BuildContext context) => TestPage(
+                                                  content: response.bodyBytes,
+                                                ),
+                                              ),
+                                            );
+                                            // print('${response.body}');
                                           },
                                         ),
                                     ],

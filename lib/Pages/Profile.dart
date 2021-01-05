@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../backend/User.dart';
 
 class ProfileState extends State<Profile> {
+  void updateUser() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
