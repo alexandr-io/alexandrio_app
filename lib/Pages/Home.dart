@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:demo/Components/UI/AppBarBlur.dart';
 import 'package:demo/Pages/Test.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -211,6 +213,22 @@ class HomeState extends State<Home> {
     // }
   }
 
+  Future<List<String>> pickPdf() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      var file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+      if (file == null || file.files.isEmpty || file.names.isEmpty) return [];
+      return [file.names.first, file.files.first.path];
+    } else {
+      final typeGroup = XTypeGroup(extensions: ['pdf']);
+      final file = await openFile(acceptedTypeGroups: [typeGroup]);
+      if (file == null) return [];
+      return [file.name, file.path];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool tabletMode = MediaQuery.of(context).size.width > 700;
@@ -275,14 +293,7 @@ class HomeState extends State<Home> {
                                   padding: const EdgeInsets.all(12.0),
                                   child: FlatButton.icon(
                                     onPressed: () async {
-                                      // var file = await FilePicker.platform.pickFiles(
-                                      //   type: FileType.custom,
-                                      //   allowedExtensions: ['pdf'],
-                                      // );
-                                      // if (file == null) return;
-                                      final typeGroup = XTypeGroup(extensions: ['pdf']);
-                                      final file = await openFile(acceptedTypeGroups: [typeGroup]);
-                                      if (file == null) return;
+                                      var fileData = await pickPdf();
 
                                       var req = await http.post(
                                         'http://library.preprod.alexandrio.cloud/book',
@@ -291,7 +302,7 @@ class HomeState extends State<Home> {
                                           'Authorization': 'Bearer ${widget.user.authToken}',
                                         },
                                         body: jsonEncode({
-                                          'title': file.name,
+                                          'title': fileData.first,
                                           'library_id': '5fe1f538131c113239b9c46d',
                                         }),
                                       );
@@ -305,7 +316,7 @@ class HomeState extends State<Home> {
                                       request.files.add(
                                         await http.MultipartFile.fromPath(
                                           'book',
-                                          file.path,
+                                          fileData.last,
                                         ),
                                       );
                                       // request.fields['book'] = file.files.first.bytes.toString(); // (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();

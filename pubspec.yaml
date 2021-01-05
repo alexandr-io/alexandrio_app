@@ -10,15 +10,16 @@ dependencies:
   http: any
   pdf: any
   printing: any
+  file_picker: any
   file_selector: any
-  file_selector_linux:
-    git:
-      url: https://github.com/google/flutter-desktop-embedding
-      path: plugins/file_selector/file_selector_linux
   file_selector_macos:
     git:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/file_selector/file_selector_macos
+  file_selector_linux:
+    git:
+      url: https://github.com/google/flutter-desktop-embedding
+      path: plugins/file_selector/file_selector_linux
   file_selector_windows:
     git:
       url: https://github.com/google/flutter-desktop-embedding
