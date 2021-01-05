@@ -230,7 +230,7 @@ class APIConnector {
       }
     );
 
-    if (response.statusCode != 201)
+    if (response.statusCode != 204)
       throw Exception(response.body);    
   }
 

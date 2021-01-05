@@ -174,9 +174,11 @@ class AppDrawer extends StatelessWidget {
               leading: Icon(Icons.exit_to_app),
               title: Text("Deconnexion"),
               onTap: () async {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => Login(),
-                ));
+                await api.logout(user.authToken).then((response) => {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Login(),
+                  ))
+                });
               })
         ],
       ),

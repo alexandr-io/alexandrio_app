@@ -4,6 +4,7 @@ import 'package:demo/Components/Logo.dart';
 
 import '../backend/User.dart';
 
+import 'Landing.dart';
 import 'Home.dart';
 import '../App.dart';
 
@@ -93,6 +94,24 @@ class ProfileState extends State<Profile> {
                   });
                 },
               ),
+              Padding(
+                padding: const EdgeInsets.only(top:48.0, bottom: 8.0),
+                child: RaisedButton(
+                  child: Text('Supprimer son compte'),
+                  onPressed: () async {
+                    await api.deleteUser(widget.user.authToken).then((response) => {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Landing()
+                        )
+                      )
+                    }).catchError((e) {
+                      print(e);
+                      _showMyDialog();
+                    });
+                  },
+                )
+              )
             ],
           )
         ),

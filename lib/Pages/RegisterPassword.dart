@@ -66,11 +66,28 @@ class RegisterPasswordState extends State<RegisterPassword> {
                     controller: confirmPasswordController,
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                  child: Text(
+                    "Invitation token",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 8.0,
+                  ),
+                  child: Text(
+                    "Add your invitation token",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
                 SizedBox.fromSize(size: Size.fromHeight(24.0)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: "Invitation code",
