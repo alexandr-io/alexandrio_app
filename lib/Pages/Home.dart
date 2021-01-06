@@ -387,12 +387,12 @@ class HomeState extends State<Home> {
                                                   ),
                                                 ),
                                                 Spacer(),
-                                                IconButton(
-                                                  icon: Icon(Icons.edit),
-                                                  onPressed: () async {
-                                                    setState(() {});
-                                                  },
-                                                ),
+                                                // IconButton(
+                                                //   icon: Icon(Icons.edit),
+                                                //   onPressed: () async {
+                                                //     setState(() {});
+                                                //   },
+                                                // ),
                                                 IconButton(
                                                   icon: Icon(Icons.delete),
                                                   onPressed: () async {
