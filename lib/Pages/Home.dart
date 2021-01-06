@@ -193,14 +193,14 @@ class HomeState extends State<Home> {
 
   Future<String> test() async {
     var test2 = http.put(
-      'http://library.preprod.alexandrio.cloud/library', // John: test
+      'http://library.alexandrio.cloud/library', // John: test
       headers: {
         'Authorization': 'Bearer ${widget.user.authToken}',
       },
     );
 
     // var headers = {'Authorization': 'Bearer ${widget.user.authToken}', 'Content-Type': 'application/json'};
-    // var request = http.Request('GET', 'http://library.preprod.alexandrio.cloud/library');
+    // var request = http.Request('GET', 'http://library.alexandrio.cloud/library');
     // request.body = '''{"name": "Bookshelf"}''';
     // request.headers.addAll(headers);
 
@@ -227,6 +227,21 @@ class HomeState extends State<Home> {
       if (file == null) return [];
       return [file.name, file.path];
     }
+  }
+
+  void createLibraryIfRequired(Map<String, dynamic> jsonResponse) async {
+    var createLibraryRequest = await http.post(
+      'http://library.alexandrio.cloud/library',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${widget.user.authToken}',
+      },
+      body: jsonEncode({
+        'name': 'Library',
+      }),
+    );
+    print(createLibraryRequest.body);
+    setState(() {});
   }
 
   @override
@@ -263,17 +278,21 @@ class HomeState extends State<Home> {
           Expanded(
             child: FutureBuilder<http.Response>(
               future: http.get(
-                'http://library.preprod.alexandrio.cloud/libraries', // John: test
+                'http://library.alexandrio.cloud/libraries', // John: test
                 headers: {
                   'Authorization': 'Bearer ${widget.user.authToken}',
                 },
               ),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
+                  print(snapshot.data.body);
+
                   var jsonResponse = jsonDecode(snapshot.data.body);
+                  if (jsonResponse['libraries'] == null) createLibraryIfRequired(jsonResponse);
+
                   return ListView(
                     children: [
-                      for (var library in jsonResponse['libraries'])
+                      for (var library in jsonResponse['libraries'] ?? [])
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,14 +315,14 @@ class HomeState extends State<Home> {
                                       var fileData = await pickPdf();
 
                                       var req = await http.post(
-                                        'http://library.preprod.alexandrio.cloud/book',
+                                        'http://library.alexandrio.cloud/book',
                                         headers: {
                                           'Content-Type': 'application/json',
                                           'Authorization': 'Bearer ${widget.user.authToken}',
                                         },
                                         body: jsonEncode({
                                           'title': fileData.first,
-                                          'library_id': '5fe1f538131c113239b9c46d',
+                                          'library_id': library['id'],
                                         }),
                                       );
 
@@ -311,7 +330,7 @@ class HomeState extends State<Home> {
 
                                       var request = http.MultipartRequest(
                                         'POST',
-                                        Uri.parse('http://media.preprod.alexandrio.cloud/book/upload'),
+                                        Uri.parse('http://media.alexandrio.cloud/book/upload'),
                                       );
                                       request.files.add(
                                         await http.MultipartFile.fromPath(
@@ -321,11 +340,12 @@ class HomeState extends State<Home> {
                                       );
                                       // request.fields['book'] = file.files.first.bytes.toString(); // (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();
                                       request.fields['book_id'] = jsonDecode(req.body)['id'];
-                                      request.fields['library_id'] = '5fe1f538131c113239b9c46d';
+                                      request.fields['library_id'] = library['id']; //'5fe1f538131c113239b9c46d';
                                       request.headers['Authorization'] = 'Bearer ${widget.user.authToken}';
                                       var res = await request.send();
                                       var wow = res.toString();
                                       print(res);
+                                      setState(() {});
                                     },
                                     icon: Icon(Icons.upload_file),
                                     label: Text('Upload'),
@@ -339,7 +359,7 @@ class HomeState extends State<Home> {
                             ),
                             FutureBuilder<http.Response>(
                               future: http.put(
-                                'http://library.preprod.alexandrio.cloud/library', // John: test
+                                'http://library.alexandrio.cloud/library', // John: test
                                 headers: {
                                   'Content-Type': 'application/json',
                                   'Authorization': 'Bearer ${widget.user.authToken}',
@@ -354,18 +374,51 @@ class HomeState extends State<Home> {
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      for (var book in jsonResponse['books'])
+                                      for (var book in jsonResponse['books'] ?? [])
                                         InkWell(
                                           child: Container(
                                             width: double.infinity,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(12.0),
-                                              child: Text('${book['title']}'),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(12.0),
+                                                    child: Text('${book['title']}'),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                IconButton(
+                                                  icon: Icon(Icons.edit),
+                                                  onPressed: () async {
+                                                    setState(() {});
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.delete),
+                                                  onPressed: () async {
+                                                    // http.delete(
+                                                    //   'http://library.alexandrio.cloud/book',
+                                                    // );
+                                                    final response = await http.Client().send(
+                                                      http.Request("DELETE", Uri.parse("http://library.alexandrio.cloud/book"))
+                                                        ..headers["Content-Type"] = "application/json"
+                                                        ..headers["Authorization"] = "Bearer ${widget.user.authToken}"
+                                                        ..body = jsonEncode(
+                                                          {
+                                                            'book_id': book['id'],
+                                                            'library_id': library['id'],
+                                                          },
+                                                        ),
+                                                    );
+                                                    setState(() {});
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           onTap: () async {
                                             var response = await http.put(
-                                              'http://media.preprod.alexandrio.cloud/book/download', // John: test
+                                              'http://media.alexandrio.cloud/book/download', // John: test
                                               headers: {
                                                 'Content-Type': 'application/json',
                                                 'Authorization': 'Bearer ${widget.user.authToken}',
@@ -375,11 +428,13 @@ class HomeState extends State<Home> {
                                               }),
                                             );
 
+                                            // var tesfdsfdsf = (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List();
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (BuildContext context) => TestPage(
                                                   content: response.bodyBytes,
                                                 ),
+                                                // builder: (BuildContext context) => App222(),
                                               ),
                                             );
                                             // print('${response.body}');

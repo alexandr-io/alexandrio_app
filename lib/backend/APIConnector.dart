@@ -6,7 +6,7 @@ import "User.dart";
 
 class APIConnector {
   var headers = {};
-  var endpoint = "http://auth.preprod.alexandrio.cloud";
+  var endpoint = "http://auth.alexandrio.cloud";
 
   User user;
 

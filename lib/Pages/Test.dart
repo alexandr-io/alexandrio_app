@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:printing/printing.dart';
 
 class TestPage extends StatefulWidget {
@@ -72,8 +73,7 @@ class TestPage2 extends StatelessWidget {
   }) : super(key: key);
 
   Future<bool> _raster() async {
-    Uint8List _doc = bytes;
-    //(await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List();
+    Uint8List _doc = (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List();
 
     var pageNum = 0;
     await for (final PdfRaster page in Printing.raster(
@@ -137,5 +137,101 @@ class TestPage2 extends StatelessWidget {
             ],
           ),
         ),
+      );
+}
+
+class App222 extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App222> {
+  var pages = <PdfPreviewPage>[];
+
+  Future<bool> _raster() async {
+    Uint8List _doc = (await rootBundle.load('assets/test.pdf')).buffer.asUint8List();
+
+    var pageNum = 0;
+    await for (final PdfRaster page in Printing.raster(
+      _doc,
+      dpi: 600.0,
+      // dpi: dpi,
+      // pages: widget.pages,
+    )) {
+      print('PAGEPAGE');
+
+      pages.add(PdfPreviewPage(
+        page: page,
+        // pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+      ));
+
+      // if (!mounted) {
+      // return false;
+      // }
+      // setState(() {
+      //   if (pages.length <= pageNum) {
+      //     pages.add(PdfPreviewPage(
+      //       page: page,
+      //       // pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+      //     ));
+      //   } else {
+      //     pages[pageNum] = PdfPreviewPage(
+      //       page: page,
+      //       // pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+      //     );
+      //   }
+      // });
+
+      pageNum++;
+    }
+
+    // pages.removeRange(pageNum, pages.length);
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: FutureBuilder(
+          future: _raster(),
+          builder: (context, state) {
+            if (state.hasData) {
+              return ListView(
+                children: pages,
+              );
+            }
+            return CircularProgressIndicator();
+          },
+        ),
+
+        // Builder(
+        //   builder: (context) {
+        //     (await rootBundle.load(/*YOUR IMAGE PATH HERE*/)).buffer.asUint8List()
+        //     Printing.raster(
+        //       _doc,
+        //     );
+        //     // for (final PdfRaster page in ) {
+        //     //   if (!mounted) {
+        //     //     return;
+        //     //   }
+        //     //   setState(() {
+        //     //     if (pages.length <= pageNum) {
+        //     //       pages.add(_PdfPreviewPage(
+        //     //         page: page,
+        //     //         pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+        //     //       ));
+        //     //     } else {
+        //     //       pages[pageNum] = _PdfPreviewPage(
+        //     //         page: page,
+        //     //         pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+        //     //       );
+        //     //     }
+        //     //   });
+
+        //     //   pageNum++;
+        //     // }
+
+        //     return null;
+        //   },
+        // ),
       );
 }
