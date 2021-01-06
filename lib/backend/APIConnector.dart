@@ -9,10 +9,10 @@ import "Error.dart";
 class APIConnector {
   var headers = {};
   List<String> endpoints = [
-    "http://auth.preprod.alexandrio.cloud",
-    "http://user.preprod.alexandrio.cloud",
-    "http://library.preprod.alexandrio.cloud",
-    "http://media.preprod.alexandrio.cloud",
+    "http://auth.alexandrio.cloud",
+    "http://user.alexandrio.cloud",
+    "http://library.alexandrio.cloud",
+    "http://media.alexandrio.cloud",
     "http://auth.alexandrio.cloud",
     "http://user.alexandrio.cloud",
     "http://library.alexandrio.cloud",
