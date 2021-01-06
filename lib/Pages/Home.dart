@@ -369,8 +369,8 @@ class HomeState extends State<Home> {
                                 }),
                               ),
                               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                var jsonResponse = jsonDecode(snapshot.data.body);
                                 if (snapshot.hasData) {
+                                  var jsonResponse = jsonDecode(snapshot.data.body);
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
