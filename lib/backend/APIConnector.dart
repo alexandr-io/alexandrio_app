@@ -38,19 +38,17 @@ class APIConnector {
     }
   }
 
-  Future<User> login( String username,  String password) async {
-    final response = await http.post(
-      endpoints[0] + '/login',
-      body: jsonEncode(
-        {
-          'login': username,
-          'password': password,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    );
+  Future<User> login(String username, String password) async {
+    final response = await http.post(endpoints[0] + '/login',
+        body: jsonEncode(
+          {
+            'login': username,
+            'password': password,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+        });
 
     if (response.statusCode != 200) {
       throw Exception(response.body);
@@ -62,7 +60,7 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   }
 
@@ -87,12 +85,11 @@ class APIConnector {
       },
     );
 
-    // send token in body 
+    // send token in body
 
     var decodedResponse = json.decode(response.body);
 
-    if (user.username == decodedResponse['username'] && user.email == decodedResponse['email'])
-      return true;
+    if (user.username == decodedResponse['username'] && user.email == decodedResponse['email']) return true;
     return false;
   } // GET
 
@@ -109,8 +106,7 @@ class APIConnector {
       },
     );
 
-    if (response.statusCode != 204)
-      throw Exception(response.body);
+    if (response.statusCode != 204) throw Exception(response.body);
   } // POST
 
   Future<User> reset(String newPassword, String token) async {
@@ -127,8 +123,7 @@ class APIConnector {
       },
     );
 
-    if (response.statusCode != 200)
-      throw Exception(response.body);
+    if (response.statusCode != 200) throw Exception(response.body);
 
     var decodedResponse = json.decode(response.body);
 
@@ -136,7 +131,7 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   } // PUT
 
@@ -153,8 +148,7 @@ class APIConnector {
       },
     );
 
-    if (response.statusCode != 201)
-      throw Exception(response.body);
+    if (response.statusCode != 201) throw Exception(response.body);
 
     var decodedResponse = json.decode(response.body);
 
@@ -162,26 +156,24 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   } // POST
 
-  Future<User> register( String username,  String email,  String password,  String confirmPassword, String invitation) async {
-    final response = await http.post(
-      endpoints[0] + '/register',
-      body: jsonEncode(
-        {
-          'username': username,
-          'email': email,
-          'invitation_token': invitation,
-          'password': password,
-          'confirm_password': confirmPassword,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    );
+  Future<User> register(String username, String email, String password, String confirmPassword, String invitation) async {
+    final response = await http.post(endpoints[0] + '/register',
+        body: jsonEncode(
+          {
+            'username': username,
+            'email': email,
+            'invitation_token': invitation,
+            'password': password,
+            'confirm_password': confirmPassword,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+        });
 
     if (response.statusCode != 201) {
       print(response.body);
@@ -194,11 +186,11 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   }
 
-  Future<void> refreshToken( User user) async {
+  Future<void> refreshToken(User user) async {
     final response = await http.post(
       endpoints[0] + '/auth/refresh',
       headers: {
@@ -207,8 +199,7 @@ class APIConnector {
       },
     );
 
-    if (response.statusCode != 201)
-      throw Exception(response.body);
+    if (response.statusCode != 201) throw Exception(response.body);
 
     var decodedResponse = json.decode(response.body);
 
@@ -216,34 +207,26 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: decodedResponse['auth_token'],
-      refreshToken: decodedResponse['refresh_token'], 
+      refreshToken: decodedResponse['refresh_token'],
     );
   }
 
   // USER RELATED CALLS
 
   Future<void> deleteUser(String authToken) async {
-    final response = await http.delete(
-      endpoints[1] + '/user',
-      headers: {
-        "Authorization": "Bearer " + authToken,
-      }
-    );
+    final response = await http.delete(endpoints[1] + '/user', headers: {
+      "Authorization": "Bearer " + authToken,
+    });
 
-    if (response.statusCode != 204)
-      throw Exception(response.body);    
+    if (response.statusCode != 204) throw Exception(response.body);
   }
 
   Future<User> getUser(User user) async {
-    final response = await http.get(
-      endpoints[1] + '/user',
-      headers: {
-        "Authorization": "Bearer " + user.authToken,
-      }
-    );
+    final response = await http.get(endpoints[1] + '/user', headers: {
+      "Authorization": "Bearer " + user.authToken,
+    });
 
-    if (response.statusCode != 200)
-      throw Exception(response.body);
+    if (response.statusCode != 200) throw Exception(response.body);
 
     var decodedResponse = json.decode(response.body);
 
@@ -251,7 +234,7 @@ class APIConnector {
       username: decodedResponse['username'],
       email: decodedResponse['email'],
       authToken: user.authToken,
-      refreshToken: user.refreshToken, 
+      refreshToken: user.refreshToken,
     );
   }
 
@@ -319,39 +302,32 @@ class APIConnector {
   // to do: Add BOOK type
 
   Future<void> createBook(String authToken, String author, String description, String libraryId, String publisher, List<String> tags, String title) async {
-    final response = await http.post(
-      endpoints[2] + '/book',
-      body: jsonEncode(
-        {
-          'author': author,
-          'description': description,
-          'library_id': libraryId,
-          'publisher': publisher,
-          'tags': tags,
-          'title': title,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer" + authToken,
-      }
-    );
+    final response = await http.post(endpoints[2] + '/book',
+        body: jsonEncode(
+          {
+            'author': author,
+            'description': description,
+            'library_id': libraryId,
+            'publisher': publisher,
+            'tags': tags,
+            'title': title,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer" + authToken,
+        });
 
-    if (response.statusCode != 200)
-      throw Exception(response.body);
+    if (response.statusCode != 200) throw Exception(response.body);
   } // POST
   // to do: Add BOOK type
 
   Future<void> retrieveLibraries(String authToken) async {
-    final response = await http.get(
-      endpoints[2] + '/libraries',
-      headers: {
-        "Authorization": "Bearer" + authToken,
-      }
-    );
+    final response = await http.get(endpoints[2] + '/libraries', headers: {
+      "Authorization": "Bearer" + authToken,
+    });
 
-    if (response.statusCode != 200)
-      throw Exception(response.body);
+    if (response.statusCode != 200) throw Exception(response.body);
   } // GET
   // to do: Add LIBRARY type
 
@@ -365,21 +341,18 @@ class APIConnector {
   // // to do: Add LIBRARY type
 
   Future<void> createLibrary(String authToken, String description, String name) async {
-    final response = await http.post(
-      endpoints[2] + '/libraries',
-      body: jsonEncode(
-        {
-          'name': name,
-          'description': description,
-        },
-      ),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer" + authToken,
-      }
-    );
+    final response = await http.post(endpoints[2] + '/libraries',
+        body: jsonEncode(
+          {
+            'name': name,
+            'description': description,
+          },
+        ),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer" + authToken,
+        });
 
-    if (response.statusCode != 200)
-      throw Exception(response.body);    
+    if (response.statusCode != 200) throw Exception(response.body);
   } // POST
 }
