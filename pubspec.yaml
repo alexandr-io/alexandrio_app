@@ -21,37 +21,33 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  http: any
-  pdf: any
-  printing: any
-  file_picker: any
-
-  # pdf: any
-  # universal_html: any
-  # native_pdf_view: any
-
   flutter:
     sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: any
+  http: any
+  html: any
+  epub: any
+  hive: any
+  hive_flutter: any
+  # flutter_ui_tools:
+  #   path: C:/Users/OrangeCat/Desktop/Projects/Personal/flutter_ui_tools
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^0.8.2
+  build_runner: ^1.10.13
 
-dependency_overrides:
-  printing:
-    git:
-      url: https://github.com/alexandr-io/dart_pdf
-      path: printing
-  pdf:
-    git:
-      url: https://github.com/alexandr-io/dart_pdf
-      path: pdf
-  extended_image: 1.5.0-dev
+# dependency_overrides:
+#   printing:
+#     git:
+#       url: https://github.com/alexandr-io/dart_pdf
+#       path: printing
+#   # pdf:
+#   #   git:
+#   #     url: https://github.com/alexandr-io/dart_pdf
+#   #     path: pdf
+#   extended_image: 1.5.0-dev
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
