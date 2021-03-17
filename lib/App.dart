@@ -1,9 +1,11 @@
 import 'package:demo/Pages/Landing.dart';
+import 'package:epub/epub.dart';
 import 'package:flutter/material.dart';
 
 import 'ThemeBuilder.dart';
 import 'backend/APIConnector.dart';
 import 'backend/User.dart';
+import 'backend/Epub.dart';
 
 class App extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   var api = APIConnector();
+  var epub = EpubLogic();
   User user;
   
   @override

@@ -16,6 +16,7 @@ import '../backend/User.dart';
 
 import 'Profile.dart';
 import 'Login.dart';
+import 'EpubReader.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http/src/multipart_file.dart' as http;
@@ -162,6 +163,15 @@ class AppDrawer extends StatelessWidget {
               builder: (BuildContext context) => Profile(
                 user: user,
               ),
+            )),
+          ),
+          ListTile(
+            leading: Icon(Icons.book),
+            title: Text("Test EPUB"),
+            onTap: () async => Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => EpubReader(
+                widgets: [],
+              )
             )),
           ),
           // ListTile(
