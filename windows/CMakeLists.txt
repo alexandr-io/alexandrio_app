@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(mobile LANGUAGES CXX)
+project(alexandrio_app LANGUAGES CXX)
 
-set(BINARY_NAME "mobile")
+set(BINARY_NAME "alexandrio_app")
 
 cmake_policy(SET CMP0063 NEW)
 

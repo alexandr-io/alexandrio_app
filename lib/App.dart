@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui_tools/ThemeableMaterialApp.dart';
 
-import 'Pages/Home.dart';
-import 'Theme/ThemeManager.dart';
+import 'Pages/Login.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   @override
-  AppState createState() => AppState();
-
-  // ignore: invalid_use_of_protected_member
-  static void rebuild(BuildContext context) => of(context).setState(() {});
-  static AppState of(BuildContext context) => context.findAncestorStateOfType<AppState>();
-}
-
-class AppState extends State<App> {
-  @override
-  Widget build(BuildContext context) => ThemeManager(
-        child: Builder(
-          builder: (BuildContext context) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            themeMode: ThemeManager.of(context).mode,
-            theme: ThemeManager.of(context).light(),
-            darkTheme: ThemeManager.of(context).dark(),
-            home: HomePage(),
-          ),
+  Widget build(BuildContext context) => ThemeableMaterialApp(
+        appBuilder: (BuildContext context, ThemeData darkTheme, ThemeData lightTheme, ThemeMode themeMode) => MaterialApp(
+          title: 'Alexandr.io',
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: themeMode,
+          home: LoginPage(),
         ),
       );
 }
