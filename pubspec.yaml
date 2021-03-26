@@ -16,7 +16,8 @@ dependencies:
   hive: any
   hive_flutter: any
   flutter_ui_tools:
-    path: ./tools/flutter_ui_tools
+    git:
+      url: "https://github.com/williambulin/flutter_ui_tools" 
   epub: any
 
 dev_dependencies:

@@ -245,9 +245,11 @@ packages:
   flutter_ui_tools:
     dependency: "direct main"
     description:
-      path: "tools/flutter_ui_tools"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "9c8af86a7e33dbb8e221062c2d24e4e9f3a9636a"
+      url: "https://github.com/williambulin/flutter_ui_tools"
+    source: git
     version: "1.0.0+1"
   glob:
     dependency: transitive
