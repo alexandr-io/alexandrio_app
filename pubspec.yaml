@@ -21,6 +21,7 @@ dependencies:
   epub: any
 
 dev_dependencies:
+  syncfusion_flutter_pdf: ^18.3.53-beta
   flutter_test:
     sdk: flutter
   hive_generator: ^0.8.2
