@@ -101,11 +101,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             Form.of(context).validate();
                             try {
                               var credentials = await AlexandrioAPI().registerUser(invitationToken: invitationController.text, login: loginController.text, email: emailController.text, password: passwordController.text);
-                              await Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => HomePage(
-                                  credentials: credentials,
+                              await Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => HomePage(
+                                    credentials: credentials,
+                                  ),
                                 ),
-                              ));
+                                (route) => false,
+                              );
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

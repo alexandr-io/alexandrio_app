@@ -2,10 +2,16 @@ import 'package:alexandrio_app/API/Alexandrio.dart';
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:alexandrio_app/Data/Library.dart';
+import 'package:alexandrio_app/Pages/Feedback.dart';
+import 'package:alexandrio_app/Pages/Login.dart';
+import 'package:alexandrio_app/Pages/PdfReader.dart';
 import 'package:alexandrio_app/Pages/Settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
+
+import 'EpubReader.dart';
 
 class Library2 {
   final String name;
@@ -136,11 +142,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<Library>> libraries;
+  TextEditingController libraryController = TextEditingController();
 
   @override
   void initState() {
     libraries = AlexandrioAPI().getLibraries(widget.credentials);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    libraryController.dispose();
+    super.dispose();
   }
 
   @override
@@ -155,10 +168,27 @@ class _HomePageState extends State<HomePage> {
             centerTitle: true,
             actions: [
               IconButton(
+                icon: Icon(Icons.feedback),
+                onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => FeedbackPage(
+                    credentials: widget.credentials,
+                  ),
+                )),
+              ),
+              IconButton(
                 icon: Icon(Icons.settings),
                 onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => SettingsPage(),
                 )),
+              ),
+              IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () async => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => LoginPage(),
+                  ),
+                  (route) => false,
+                ),
               ),
             ],
           ),
@@ -166,7 +196,7 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: Builder(
           builder: (context) => FloatingActionButton(
             onPressed: () async {
-              BottomModal.push(
+              await BottomModal.push(
                 context: context,
                 child: BottomModal(
                   height: 64.0,
@@ -175,6 +205,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextField(
+                          controller: libraryController,
                           decoration: InputDecoration(
                             hintText: 'Name',
                             isDense: true,
@@ -183,7 +214,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton.icon(
-                        onPressed: () async {},
+                        onPressed: () async {
+                          await AlexandrioAPI().createLibrary(
+                            widget.credentials,
+                            name: libraryController.text,
+                          );
+                          setState(() {});
+                        },
                         icon: Icon(Icons.add),
                         label: Text('Create library'),
                       ),
@@ -192,8 +229,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
-            child: Icon(Icons.add),
             tooltip: 'Create new library',
+            child: Icon(Icons.add),
           ),
         ),
         body: RefreshIndicator(
@@ -209,10 +246,40 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.hasData) {
                 return ListView(
                   children: [
-                    for (var library in libraries2)
+                    for (var library in snapshot.data)
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          ListTile(
+                            leading: Icon(Icons.picture_as_pdf),
+                            onTap: () async {
+                              var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => PdfReaderPage(
+                                    book: Book(name: 'OpenOffice for dummies'),
+                                    bytes: bytes,
+                                  ),
+                                ),
+                              );
+                            },
+                            title: Text('PDF Reader'),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.book),
+                            onTap: () async {
+                              var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => EpubReaderPage(
+                                    book: Book(name: 'OpenOffice for dummies'),
+                                    bytes: bytes,
+                                  ),
+                                ),
+                              );
+                            },
+                            title: Text('EPUB Reader'),
+                          ),
                           InkWell(
                             onTap: () async {},
                             child: Row(
@@ -233,50 +300,59 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Container(
                             height: 160.0,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: [
-                                for (var book in library.books)
-                                  Container(
-                                    width: 160.0 * (10.0 / 16.0),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width: 160.0 * (10.0 / 16.0),
-                                          child: book.thumbnail != null
-                                              ? Image.network(
-                                                  book.thumbnail,
-                                                  height: 160.0,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.book,
-                                                      size: 48.0,
+                            child: FutureBuilder(
+                              future: AlexandrioAPI().getBooksForLibrary(widget.credentials, library: library),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return CircularProgressIndicator.adaptive();
+                                }
+
+                                return ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    for (var book in snapshot.data) // library.books)
+                                      Container(
+                                        width: 160.0 * (10.0 / 16.0),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 160.0 * (10.0 / 16.0),
+                                              child: book.thumbnail != null
+                                                  ? Image.network(
+                                                      book.thumbnail,
+                                                      height: 160.0,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.book,
+                                                          size: 48.0,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
+                                                          child: Text(
+                                                            book.name,
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
-                                                      child: Text(
-                                                        book.name,
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                            ),
+                                            Material(
+                                              color: Colors.transparent,
+                                              child: InkWell(
+                                                onTap: () async {},
+                                                child: Container(),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () async {},
-                                            child: Container(),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
+                                      ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ],
