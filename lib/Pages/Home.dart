@@ -12,6 +12,7 @@ import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
 
 import 'EpubReader.dart';
+import 'Library.dart';
 
 class Library2 {
   final String name;
@@ -219,7 +220,9 @@ class _HomePageState extends State<HomePage> {
                             widget.credentials,
                             name: libraryController.text,
                           );
-                          setState(() {});
+                          setState(() {
+                            libraries = AlexandrioAPI().getLibraries(widget.credentials);
+                          });
                         },
                         icon: Icon(Icons.add),
                         label: Text('Create library'),
@@ -246,42 +249,67 @@ class _HomePageState extends State<HomePage> {
               if (snapshot.hasData) {
                 return ListView(
                   children: [
+                    ListTile(
+                      leading: Icon(Icons.picture_as_pdf),
+                      onTap: () async {
+                        var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => PdfReaderPage(
+                              book: Book(name: 'OpenOffice for dummies'),
+                              bytes: bytes,
+                            ),
+                          ),
+                        );
+                      },
+                      title: Text('PDF Reader'),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.book),
+                      onTap: () async {
+                        var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => EpubReaderPage(
+                              book: Book(name: 'OpenOffice for dummies'),
+                              bytes: bytes,
+                            ),
+                          ),
+                        );
+                      },
+                      title: Text('EPUB Reader'),
+                    ),
+                    if (snapshot.data.isEmpty)
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info,
+                            size: 126.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          Text(
+                            'There are no libraries here... yet!\nTo get started, try creating one!',
+                            style: Theme.of(context).textTheme.headline5,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     for (var library in snapshot.data)
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ListTile(
-                            leading: Icon(Icons.picture_as_pdf),
-                            onTap: () async {
-                              var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => PdfReaderPage(
-                                    book: Book(name: 'OpenOffice for dummies'),
-                                    bytes: bytes,
-                                  ),
-                                ),
-                              );
-                            },
-                            title: Text('PDF Reader'),
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.book),
-                            onTap: () async {
-                              var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => EpubReaderPage(
-                                    book: Book(name: 'OpenOffice for dummies'),
-                                    bytes: bytes,
-                                  ),
-                                ),
-                              );
-                            },
-                            title: Text('EPUB Reader'),
-                          ),
                           InkWell(
-                            onTap: () async {},
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => LibraryPage(
+                                    credentials: widget.credentials,
+                                    library: library,
+                                  ),
+                                ),
+                              );
+                            },
                             child: Row(
                               children: [
                                 Padding(
@@ -333,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                                                         Padding(
                                                           padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
                                                           child: Text(
-                                                            book.name,
+                                                            book.name ?? 'unnamed',
                                                             textAlign: TextAlign.center,
                                                           ),
                                                         ),

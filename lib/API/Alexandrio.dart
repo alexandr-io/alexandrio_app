@@ -76,6 +76,7 @@ class AlexandrioAPI {
     );
   }
 
+  // TODO: Return library
   Future<void> createLibrary(Credentials credentials, {String name, String description}) async {
     var response = await http.post(
       Uri.parse('${ms('library')}/library'),
@@ -103,7 +104,7 @@ class AlexandrioAPI {
 
   Future<List<Book>> getBooksForLibrary(Credentials credentials, {Library library}) async {
     var response = await http.get(
-      Uri.parse('${ms('library')}/library/${library.id}'),
+      Uri.parse('${ms('library')}/library/${library.id}/books'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${credentials.token}',
@@ -111,11 +112,11 @@ class AlexandrioAPI {
     );
     if (response.statusCode != 200) throw 'Couldn\'t get books';
     var json = jsonDecode(utf8.decode(response.bodyBytes));
-    if (json == null || json['books'] == null) return [];
+    if (json == null) return [];
     return List<Book>.from(
-      json['books'].map(
+      json.map(
         (jsonEntry) => Book(
-          name: jsonEntry['name'],
+          name: jsonEntry['title'],
         ),
       ),
     );
