@@ -1,8 +1,10 @@
 import 'package:alexandrio_app/API/Alexandrio.dart';
+import 'package:alexandrio_app/API/Epub.dart';
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:alexandrio_app/Data/Library.dart';
 import 'package:alexandrio_app/Pages/Settings.dart';
+import 'package:alexandrio_app/Pages/EpubReader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
@@ -136,6 +138,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<Library>> libraries;
+  List<Text> widgets;
 
   @override
   void initState() {
@@ -154,6 +157,15 @@ class _HomePageState extends State<HomePage> {
             title: Text('Alexandr.io'),
             centerTitle: true,
             actions: [
+              IconButton(
+                icon: Icon(Icons.book),
+                onPressed: () async => {
+                  widgets = await getInfos(),
+                  Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => EpubReaderPage(widgets: widgets),
+                  )),
+                }
+              ),
               IconButton(
                 icon: Icon(Icons.settings),
                 onPressed: () async => Navigator.of(context).push(MaterialPageRoute(

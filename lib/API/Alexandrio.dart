@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class AlexandrioAPI {
   String ms(String ms) {
-    return 'http://$ms.preprod.alexandrio.cloud';
+    return 'https://$ms.preprod.alexandrio.cloud';
   }
 
   Future<Credentials> loginUser({String login, String password}) async {
