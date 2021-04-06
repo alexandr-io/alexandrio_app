@@ -49,6 +49,14 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Image.network(
+                        'https://i.imgur.com/kJJvK49.png',
+                        isAntiAlias: true,
+                        filterQuality: FilterQuality.high,
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         controller: loginController,
@@ -78,11 +86,14 @@ class _LoginPageState extends State<LoginPage> {
                             Form.of(context).validate();
                             try {
                               var credentials = await AlexandrioAPI().loginUser(login: loginController.text, password: passwordController.text);
-                              await Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => HomePage(
-                                  credentials: credentials,
+                              await Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) => HomePage(
+                                    credentials: credentials,
+                                  ),
                                 ),
-                              ));
+                                (route) => false,
+                              );
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

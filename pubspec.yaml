@@ -16,17 +16,20 @@ dependencies:
   hive: any
   hive_flutter: any
   flutter_ui_tools:
-    git:
-      url: "https://github.com/williambulin/flutter_ui_tools" 
+    git: git@github.com:williambulin/flutter_ui_tools
+  dart_discord:
+    git: git@github.com:williambulin/dart_discord
   epub: any
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   hive_generator: ^0.8.2
   build_runner: ^1.10.13
+  pedantic: any
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/samples/
+    - assets/samples/pdf/
+    - assets/samples/epub/
