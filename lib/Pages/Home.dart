@@ -1,5 +1,4 @@
 import 'package:alexandrio_app/API/Alexandrio.dart';
-import 'package:alexandrio_app/API/Epub.dart';
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:alexandrio_app/Data/Library.dart';
@@ -172,13 +171,6 @@ class _HomePageState extends State<HomePage> {
             centerTitle: true,
             actions: [
               IconButton(
-                // icon: Icon(Icons.book),
-                // onPressed: () async => {
-                //   widgets = await getInfos(),
-                //   Navigator.of(context).push(MaterialPageRoute(
-                //   builder: (BuildContext context) => EpubReaderPage(),
-                //   )),
-                // }
                 icon: Icon(Icons.feedback),
                 onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => FeedbackPage(
@@ -277,12 +269,10 @@ class _HomePageState extends State<HomePage> {
                     ListTile(
                       leading: Icon(Icons.book),
                       onTap: () async {
-                        var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
                         await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext context) => EpubReaderPage(
                               book: Book(name: 'OpenOffice for dummies'),
-                              bytes: bytes,
                             ),
                           ),
                         );
