@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:epub/epub.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,54 +20,53 @@ class EpubReaderPage extends StatefulWidget {
 }
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Epub Reader - Reading ${widget.book.name}'),
       ),
-      body: ListView(
-        padding: EdgeInsets.all(32.0),
-        children: [
-          SizedBox(height: 64.0),
-          FutureBuilder<WidgetInfos>(
-            future: _getInfos(context),
-            builder: (BuildContext context, AsyncSnapshot<WidgetInfos> snapshot) {
+      body: Center(
+        child: AspectRatio(
+          aspectRatio:
+              (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  ? 4 / 3
+                  : 1 / 2,
+          child: ListView(
+            children: [
+              SizedBox(height: 64.0),
+              FutureBuilder<WidgetInfos>(
+                  future: _getInfos(context),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<WidgetInfos> snapshot) {
+                    var content = <Widget>[];
 
-              var content = <Widget>[];
-
-              if (snapshot.hasData) {
-                content = <Widget> [
-                  ...snapshot.data.widgets
-                ];
-              } else if (snapshot.hasError) {
-                print(snapshot.error);
-              } else {
-                content = <Widget>[
-                  SizedBox(
-                    child: CircularProgressIndicator(),
-                    width: 60,
-                    height: 60,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Text('Chargement...'),
-                  )
-                ];
-              }
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ...content
-                  ]
-                )
-              );
-            }
-          )
-        ],
+                    if (snapshot.hasData) {
+                      content = <Widget>[...snapshot.data.widgets];
+                    } else if (snapshot.hasError) {
+                      print(snapshot.error);
+                    } else {
+                      content = <Widget>[
+                        SizedBox(
+                          child: CircularProgressIndicator(),
+                          width: 60,
+                          height: 60,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text('Chargement...'),
+                        )
+                      ];
+                    }
+                    return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [...content]));
+                  })
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -92,7 +93,6 @@ Future<WidgetInfos> _getInfos(BuildContext context) async {
   return widgets;
 }
 
-
 WidgetInfos fillTextList(BuildContext context, EpubBook epubBook) {
   var widgetsList = WidgetInfos(widgets: [], info: []);
 
@@ -106,7 +106,6 @@ WidgetInfos fillTextList(BuildContext context, EpubBook epubBook) {
         widgetsList.info.add(infos.info[i]);
       }
     }
-    
   });
 
   return widgetsList;
@@ -117,15 +116,20 @@ WidgetInfos retrieveTextStyle(BuildContext context, List nodes) {
 
   for (var i = 0; i < nodes.length; ++i) {
     if (nodes[i].localName == 'h1') {
-      pageTexts.widgets.add(Text(nodes[i].text, style: Theme.of(context).textTheme.headline1));
+      pageTexts.widgets.add(
+          Text(nodes[i].text, style: Theme.of(context).textTheme.headline1));
     } else if (nodes[i].localName == 'h2') {
-      pageTexts.widgets.add(Text(nodes[i].text, style: Theme.of(context).textTheme.headline2));
+      pageTexts.widgets.add(
+          Text(nodes[i].text, style: Theme.of(context).textTheme.headline2));
     } else if (nodes[i].localName == 'h3') {
-      pageTexts.widgets.add(Text(nodes[i].text, style: Theme.of(context).textTheme.headline3));
+      pageTexts.widgets.add(
+          Text(nodes[i].text, style: Theme.of(context).textTheme.headline3));
     } else if (nodes[i].localName == 'h4') {
-      pageTexts.widgets.add(Text(nodes[i].text, style: Theme.of(context).textTheme.headline4));
+      pageTexts.widgets.add(
+          Text(nodes[i].text, style: Theme.of(context).textTheme.headline4));
     } else if (nodes[i].localName == 'h5') {
-      pageTexts.widgets.add(Text(nodes[i].text, style: Theme.of(context).textTheme.headline5));
+      pageTexts.widgets.add(
+          Text(nodes[i].text, style: Theme.of(context).textTheme.headline5));
     } else {
       pageTexts.widgets.add(Text(nodes[i].text));
     }
@@ -133,4 +137,3 @@ WidgetInfos retrieveTextStyle(BuildContext context, List nodes) {
   }
   return pageTexts;
 }
-
