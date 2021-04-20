@@ -102,6 +102,17 @@ class AlexandrioAPI {
     // );
   }
 
+  Future<void> deleteLibrary(Credentials credentials, {String libraryId}) async {
+    var response = await http.delete(
+      Uri.parse('${ms('library')}/library/$libraryId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${credentials.token}',
+      },
+    );
+    if (response.statusCode != 204) throw 'Couldn\'t destroy library';
+  }
+
   Future<List<Book>> getBooksForLibrary(Credentials credentials, {Library library}) async {
     var response = await http.get(
       Uri.parse('${ms('library')}/library/${library.id}/books'),

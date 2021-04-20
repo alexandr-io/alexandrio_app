@@ -22,6 +22,14 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text(widget.library.name),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                await AlexandrioAPI().deleteLibrary(widget.credentials, libraryId: widget.library.id);
+              },
+            ),
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {},
