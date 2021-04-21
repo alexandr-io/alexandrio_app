@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
-            title: Text('Alexandr.io'),
+            title: Text('Alexandrio'),
             centerTitle: true,
             actions: [
               IconButton(
