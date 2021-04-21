@@ -247,145 +247,147 @@ class _HomePageState extends State<HomePage> {
             future: libraries,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return ListView(
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.picture_as_pdf),
-                      onTap: () async {
-                        var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => PdfReaderPage(
-                              book: Book(name: 'OpenOffice for dummies'),
-                              bytes: bytes,
+                return Scrollbar(
+                  child: ListView(
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.picture_as_pdf),
+                        onTap: () async {
+                          var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => PdfReaderPage(
+                                book: Book(name: 'OpenOffice for dummies'),
+                                bytes: bytes,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: Text('PDF Reader'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.book),
-                      onTap: () async {
-                        var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => EpubReaderPage(
-                              book: Book(name: 'OpenOffice for dummies'),
-                              bytes: bytes,
-                            ),
-                          ),
-                        );
-                      },
-                      title: Text('EPUB Reader'),
-                    ),
-                    if (snapshot.data.isEmpty)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.info,
-                            size: 126.0,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          Text(
-                            'There are no libraries here... yet!\nTo get started, try creating one!',
-                            style: Theme.of(context).textTheme.headline5,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                          );
+                        },
+                        title: Text('PDF Reader'),
                       ),
-                    for (var library in snapshot.data)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => LibraryPage(
-                                    credentials: widget.credentials,
-                                    library: library,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, left: 16.0, right: 4.0),
-                                  child: Text(
-                                    library.name,
-                                    style: Theme.of(context).textTheme.headline6,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 2.0, right: 16.0),
-                                  child: Icon(Icons.chevron_right),
-                                ),
-                              ],
+                      ListTile(
+                        leading: Icon(Icons.book),
+                        onTap: () async {
+                          var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => EpubReaderPage(
+                                book: Book(name: 'OpenOffice for dummies'),
+                                bytes: bytes,
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: 160.0,
-                            child: FutureBuilder(
-                              future: AlexandrioAPI().getBooksForLibrary(widget.credentials, library: library),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return CircularProgressIndicator.adaptive();
-                                }
-
-                                return ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    for (var book in snapshot.data) // library.books)
-                                      Container(
-                                        width: 160.0 * (10.0 / 16.0),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              width: 160.0 * (10.0 / 16.0),
-                                              child: book.thumbnail != null
-                                                  ? Image.network(
-                                                      book.thumbnail,
-                                                      height: 160.0,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.book,
-                                                          size: 48.0,
-                                                        ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
-                                                          child: Text(
-                                                            book.name ?? 'unnamed',
-                                                            textAlign: TextAlign.center,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                            ),
-                                            Material(
-                                              color: Colors.transparent,
-                                              child: InkWell(
-                                                onTap: () async {},
-                                                child: Container(),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
+                          );
+                        },
+                        title: Text('EPUB Reader'),
+                      ),
+                      if (snapshot.data.isEmpty)
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info,
+                              size: 126.0,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            Text(
+                              'There are no libraries here... yet!\nTo get started, try creating one!',
+                              style: Theme.of(context).textTheme.headline5,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      for (var library in snapshot.data)
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => LibraryPage(
+                                      credentials: widget.credentials,
+                                      library: library,
+                                    ),
+                                  ),
                                 );
                               },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, left: 16.0, right: 4.0),
+                                    child: Text(
+                                      library.name,
+                                      style: Theme.of(context).textTheme.headline6,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 2.0, right: 16.0),
+                                    child: Icon(Icons.chevron_right),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                  ],
+                            Container(
+                              height: 160.0,
+                              child: FutureBuilder(
+                                future: AlexandrioAPI().getBooksForLibrary(widget.credentials, library: library),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return CircularProgressIndicator.adaptive();
+                                  }
+
+                                  return ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      for (var book in snapshot.data) // library.books)
+                                        Container(
+                                          width: 160.0 * (10.0 / 16.0),
+                                          child: Stack(
+                                            children: [
+                                              Container(
+                                                width: 160.0 * (10.0 / 16.0),
+                                                child: book.thumbnail != null
+                                                    ? Image.network(
+                                                        book.thumbnail,
+                                                        height: 160.0,
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    : Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.book,
+                                                            size: 48.0,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0),
+                                                            child: Text(
+                                                              book.name ?? 'unnamed',
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                              ),
+                                              Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () async {},
+                                                  child: Container(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
                 );
               } else if (snapshot.hasError) {
                 return SingleChildScrollView(
