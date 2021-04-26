@@ -57,7 +57,7 @@ class AlexandrioAPI {
 
   Future<List<Library>> getLibraries(Credentials credentials) async {
     var response = await http.get(
-      Uri.parse('${ms('library')}/library/list'),
+      Uri.parse('${ms('library')}/libraries'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${credentials.token}',
