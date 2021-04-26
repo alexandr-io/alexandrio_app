@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:epub/epub.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +20,6 @@ class EpubReaderPage extends StatefulWidget {
 }
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,43 +28,42 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
       ),
       body: Center(
         child: AspectRatio(
-          aspectRatio: 3 / 4,
+          aspectRatio:
+              (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  ? 4 / 3
+                  : 1 / 2,
           child: ListView(
-            // padding: EdgeInsets.all(32.0),
             children: [
               SizedBox(height: 64.0),
               FutureBuilder<BookInfos>(
-                future: _getInfos(context),
-                builder: (BuildContext context, AsyncSnapshot<BookInfos> snapshot) {
+                  future: _getInfos(context),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<BookInfos> snapshot) {
+                    var content = <Widget>[];
 
-                  var content = <Widget>[];
-
-                  if (snapshot.hasData) {
-                    content = <Widget> [
-                      ...snapshot.data.widgets
-                    ];
-                  } else if (snapshot.hasError) {
-                    print(snapshot.error);
-                  } else {
-                    content = <Widget>[
-                      SizedBox(
-                        child: CircularProgressIndicator(),
-                        width: 60,
-                        height: 60,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Text('Chargement...'),
-                      )
-                    ];
-                  }
-                  return Column(
-                    children: [
-                      ...content
-                    ]
-                  );
-                }
-              )
+                    if (snapshot.hasData) {
+                      content = <Widget>[...snapshot.data.widgets];
+                    } else if (snapshot.hasError) {
+                      print(snapshot.error);
+                    } else {
+                      content = <Widget>[
+                        SizedBox(
+                          child: CircularProgressIndicator(),
+                          width: 60,
+                          height: 60,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text('Chargement...'),
+                        )
+                      ];
+                    }
+                    return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [...content]));
+                  })
             ],
           ),
         ),
@@ -90,4 +90,3 @@ Future<BookInfos> _getInfos(BuildContext context) async {
 
   return fillTextList(context, epubBook);
 }
-
