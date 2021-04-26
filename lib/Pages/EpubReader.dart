@@ -21,7 +21,11 @@ class EpubReaderPage extends StatefulWidget {
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
   @override
+
+
   Widget build(BuildContext context) {
+    var _controller = ScrollController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Epub Reader - Reading ${widget.book.name}'),
@@ -32,10 +36,20 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
                   ? 4 / 3
                   : 1 / 2,
-          child: ListView(
-            children: [
-              SizedBox(height: 64.0),
-              FutureBuilder<BookInfos>(
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollUpdateNotification) {
+                print(_controller.offset); // Current offset
+                print(_controller.position.maxScrollExtent); // Maximum offset
+                print((_controller.offset * 100) / _controller.position.maxScrollExtent); // Percentage readed
+              }
+              return;
+            },
+            child: ListView(
+              controller: _controller,
+              children: [
+                SizedBox(height: 64.0),
+                FutureBuilder<BookInfos>(
                   future: _getInfos(context),
                   builder: (BuildContext context,
                       AsyncSnapshot<BookInfos> snapshot) {
@@ -59,12 +73,16 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                       ];
                     }
                     return Center(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [...content]));
-                  })
-            ],
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [...content]
+                      )
+                    );
+                  }
+                )
+              ],
+            ),
           ),
         ),
       ),
