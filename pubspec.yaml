@@ -20,6 +20,7 @@ dependencies:
   dart_discord:
     git: git@github.com:williambulin/dart_discord
   epub: any
+  syncfusion_flutter_pdf: ^18.3.53-beta
 
 dev_dependencies:
   hive_generator: ^0.8.2
