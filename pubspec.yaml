@@ -1,7 +1,7 @@
 name: alexandrio_app
 description: Alexandrio Crossplatform Application
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
@@ -19,13 +19,14 @@ dependencies:
     git: git@github.com:williambulin/flutter_ui_tools
   dart_discord:
     git: git@github.com:williambulin/dart_discord
-  # epub: ^
+  epubx: any
   epub_view: any
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
   # file_picker: ^3.0.1
   file_picker_cross: ^4.3.2
+  syncfusion_flutter_pdf: ^18.3.53-beta
 
 dev_dependencies:
   hive_generator: ^1.1.0

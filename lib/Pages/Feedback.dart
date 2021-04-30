@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dart_discord/Discord.dart' as discord;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/// https://discord.com/api/webhooks/826812924940779591/5willre6V-3ts9bNfVNcKOMxwonP8T6WZUaO9xLwU_PZDcIaK91ZaImqXEWysY3x8lZr
+// https://discord.com/api/webhooks/826812924940779591/5willre6V-3ts9bNfVNcKOMxwonP8T6WZUaO9xLwU_PZDcIaK91ZaImqXEWysY3x8lZr
 class FeedbackPage extends StatefulWidget {
   final Credentials credentials;
 

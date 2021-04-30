@@ -1,8 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:epub_view/epub_view.dart';
+// import 'package:epub_view/epub_view.dart';
+import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:alexandrio_app/Data/Book.dart';
+import 'package:alexandrio_app/Data/Epub.dart';
+import 'package:alexandrio_app/API/EpubParser.dart';
 
 class EpubReaderPage extends StatefulWidget {
   final Book book;
@@ -20,6 +27,7 @@ class EpubReaderPage extends StatefulWidget {
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
   EpubController controller;
+  var _controller = ScrollController();
 
   @override
   void initState() {
@@ -33,33 +41,86 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Epub Reader - Reading ${widget.book.name}'),
-        ),
-        // body: ListView(
-        //   padding: EdgeInsets.all(32.0),
-        //   children: [
-        //     SizedBox(height: 64.0),
-        //     Icon(
-        //       Icons.search,
-        //       size: 128.0,
-        //       color: Theme.of(context).primaryColor,
-        //     ),
-        //     Text(
-        //       'There should be a book here, but instead it seems we are lost right now...',
-        //       style: Theme.of(context).textTheme.headline5,
-        //       textAlign: TextAlign.center,
-        //     ),
-        //     SizedBox(height: 64.0),
-        //     Text(
-        //       '${widget.bytes}',
-        //       textAlign: TextAlign.center,
-        //     ),
-        //   ],
-        // ),
-        body: EpubView(
-          controller: controller,
-        ),
-      );
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Epub Reader - Reading ${widget.book.name}'),
+      ),
+      body: Row(
+        children: [
+          Expanded(
+            child: EpubView(
+              controller: controller,
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? 4 / 3 : 1 / 2,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollUpdateNotification) {
+                      print(_controller.offset); // Current offset
+                      print(_controller.position.maxScrollExtent); // Maximum offset
+                      print((_controller.offset * 100) / _controller.position.maxScrollExtent); // Percentage readed
+                    }
+                    return;
+                  },
+                  child: ListView(
+                    controller: _controller,
+                    children: [
+                      SizedBox(height: 64.0),
+                      FutureBuilder<BookInfos>(
+                          future: _getInfos(context),
+                          builder: (BuildContext context, AsyncSnapshot<BookInfos> snapshot) {
+                            var content = <Widget>[];
+
+                            if (snapshot.hasData) {
+                              content = <Widget>[...snapshot.data.widgets];
+                            } else if (snapshot.hasError) {
+                              print(snapshot.error);
+                            } else {
+                              content = <Widget>[
+                                SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: CircularProgressIndicator(),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 16),
+                                  child: Text('Chargement...'),
+                                )
+                              ];
+                            }
+                            return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [...content]));
+                          })
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<BookInfos> _getInfos(BuildContext context) async {
+    // var book = await rootBundle.load('assets/samples/epub/test4.epub');
+    var epubBook = await EpubReader.readBook(widget.bytes); // book.buffer.asUint8List());
+
+    // print(epubBook.Title);
+    // print(epubBook.Author);
+    // print(epubBook.AuthorList);
+    // print(epubBook.CoverImage);
+
+    // epubBook.Chapters.forEach((EpubChapter chapter) {
+    //   print(chapter.Title);
+    //   var content = html.parse(chapter.HtmlContent);
+    //   print(content.body.text);
+    //   print(chapter.SubChapters);
+    // });
+
+    return fillTextList(context, epubBook);
+  }
 }

@@ -6,6 +6,7 @@ import 'package:alexandrio_app/Pages/Feedback.dart';
 import 'package:alexandrio_app/Pages/Login.dart';
 import 'package:alexandrio_app/Pages/PdfReader.dart';
 import 'package:alexandrio_app/Pages/Settings.dart';
+import 'package:alexandrio_app/Pages/EpubReader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
@@ -145,6 +146,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<Library>> libraries;
+  List<Text> widgets;
   TextEditingController libraryController = TextEditingController();
 
   @override
@@ -270,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                       ListTile(
                         leading: Icon(Icons.picture_as_pdf),
                         onTap: () async {
-                          var bytes = (await rootBundle.load('assets/samples/pdf/a.pdf')).buffer.asUint8List();
+                          var bytes = (await rootBundle.load('assets/samples/pdf/Document10.pdf')).buffer.asUint8List();
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (BuildContext context) => PdfReaderPage(
