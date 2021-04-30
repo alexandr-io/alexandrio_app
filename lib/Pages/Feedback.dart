@@ -1,6 +1,7 @@
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_discord/Discord.dart' as discord;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// https://discord.com/api/webhooks/826812924940779591/5willre6V-3ts9bNfVNcKOMxwonP8T6WZUaO9xLwU_PZDcIaK91ZaImqXEWysY3x8lZr
 class FeedbackPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Send feedback'),
+          title: Text(AppLocalizations.of(context).feedbackButton),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
@@ -46,7 +47,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
             );
           },
-          label: Text('Send feedback'),
+          label: Text(AppLocalizations.of(context).feedbackButton),
           icon: Icon(Icons.send),
         ),
         body: ListView(
@@ -56,7 +57,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               controller: feedbackTextController,
               decoration: InputDecoration(
                 filled: true,
-                labelText: 'Feedback',
+                // labelText: 'Feedback',
               ),
               maxLines: null,
             ),

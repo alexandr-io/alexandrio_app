@@ -13,20 +13,27 @@ dependencies:
   cupertino_icons: any
   http: any
   html: any
-  hive: any
-  hive_flutter: any
+  hive: ^2.0.4
+  hive_flutter: ^1.0.0
   flutter_ui_tools:
     git: git@github.com:williambulin/flutter_ui_tools
   dart_discord:
     git: git@github.com:williambulin/dart_discord
-  epub: any
+  # epub: ^
+  epub_view: any
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+  # file_picker: ^3.0.1
+  file_picker_cross: ^4.3.2
 
 dev_dependencies:
-  hive_generator: ^0.8.2
-  build_runner: ^1.10.13
+  hive_generator: ^1.1.0
+  build_runner: ^2.0.1
   pedantic: any
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/

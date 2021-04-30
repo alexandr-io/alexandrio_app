@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'Book.dart';
 import 'EpubReader.dart';
 import 'Library.dart';
 
@@ -165,11 +167,12 @@ class _HomePageState extends State<HomePage> {
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0.0,
-            title: Text('Alexandrio'),
+            title: Text(AppLocalizations.of(context).appName),
             centerTitle: true,
             actions: [
               IconButton(
                 icon: Icon(Icons.feedback),
+                tooltip: AppLocalizations.of(context).feedbackButton,
                 onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => FeedbackPage(
                     credentials: widget.credentials,
@@ -178,12 +181,14 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 icon: Icon(Icons.settings),
+                tooltip: AppLocalizations.of(context).settingsButton,
                 onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => SettingsPage(),
                 )),
               ),
               IconButton(
                 icon: Icon(Icons.logout),
+                tooltip: AppLocalizations.of(context).logoutButton,
                 onPressed: () async => Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (BuildContext context) => LoginPage(),
@@ -200,39 +205,51 @@ class _HomePageState extends State<HomePage> {
               await BottomModal.push(
                 context: context,
                 child: BottomModal(
-                  height: 64.0,
-                  child: ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextField(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        //   child: TextField(
+                        //     controller: libraryController,
+                        //     decoration: InputDecoration(
+                        //       hintText: AppLocalizations.of(context).nameField,
+                        //       isDense: true,
+                        //       border: InputBorder.none,
+                        //     ),
+                        //   ),
+                        // ),
+                        TextField(
                           controller: libraryController,
                           decoration: InputDecoration(
-                            hintText: 'Name',
-                            isDense: true,
-                            border: InputBorder.none,
+                            filled: true,
+                            labelText: AppLocalizations.of(context).nameField,
                           ),
                         ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () async {
-                          await AlexandrioAPI().createLibrary(
-                            widget.credentials,
-                            name: libraryController.text,
-                          );
-                          setState(() {
-                            libraries = AlexandrioAPI().getLibraries(widget.credentials);
-                          });
-                        },
-                        icon: Icon(Icons.add),
-                        label: Text('Create library'),
-                      ),
-                    ],
+                        SizedBox(height: 8.0),
+                        TextButton.icon(
+                          onPressed: () async {
+                            await AlexandrioAPI().createLibrary(
+                              widget.credentials,
+                              name: libraryController.text,
+                            );
+                            setState(() {
+                              libraries = AlexandrioAPI().getLibraries(widget.credentials);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.add),
+                          label: Text(AppLocalizations.of(context).createLibrary),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             },
-            tooltip: 'Create new library',
+            tooltip: AppLocalizations.of(context).createLibrary,
             child: Icon(Icons.add),
           ),
         ),
@@ -307,6 +324,10 @@ class _HomePageState extends State<HomePage> {
                                     builder: (BuildContext context) => LibraryPage(
                                       credentials: widget.credentials,
                                       library: library,
+                                      reload: () {
+                                        libraries = AlexandrioAPI().getLibraries(widget.credentials);
+                                        setState(() {});
+                                      },
                                     ),
                                   ),
                                 );
@@ -372,7 +393,22 @@ class _HomePageState extends State<HomePage> {
                                               Material(
                                                 color: Colors.transparent,
                                                 child: InkWell(
-                                                  onTap: () async {},
+                                                  onTap: () async {
+                                                    await Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (BuildContext context) => BookPage(
+                                                          book: book,
+                                                          credentials: widget.credentials,
+                                                          library: library,
+                                                          refresh: () async {
+                                                            setState(() {
+                                                              libraries = AlexandrioAPI().getLibraries(widget.credentials);
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
                                                   child: Container(),
                                                 ),
                                               ),

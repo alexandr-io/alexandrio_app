@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_tools/ThemeManager.dart';
 import 'package:flutter_ui_tools/ThemeableMaterialApp.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Settings'),
+          title: Text(AppLocalizations.of(context).settingsButton),
         ),
         body: ListView(
           children: [

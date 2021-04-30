@@ -1,13 +1,21 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:alexandrio_app/Data/Book.dart';
+import 'package:alexandrio_app/Data/BookData.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:alexandrio_app/Data/Library.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart' as http;
 
 class AlexandrioAPI {
   String ms(String ms) {
     return 'https://$ms.preprod.alexandrio.cloud';
+  }
+
+  AlexandrioAPI() {
+    print('Looking if we gotta refresh the token.');
   }
 
   Future<Credentials> loginUser({String login, String password}) async {
@@ -57,7 +65,7 @@ class AlexandrioAPI {
 
   Future<List<Library>> getLibraries(Credentials credentials) async {
     var response = await http.get(
-      Uri.parse('${ms('library')}/library/list'),
+      Uri.parse('${ms('library')}/libraries'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${credentials.token}',
@@ -122,14 +130,135 @@ class AlexandrioAPI {
       },
     );
     if (response.statusCode != 200) throw 'Couldn\'t get books';
-    var json = jsonDecode(utf8.decode(response.bodyBytes));
-    if (json == null) return [];
+    var jsonr = jsonDecode(utf8.decode(response.bodyBytes));
+    if (jsonr == null) return [];
     return List<Book>.from(
-      json.map(
+      jsonr.map(
         (jsonEntry) => Book(
-          name: jsonEntry['title'],
+          name: jsonEntry['title'] ?? jsonEntry['Title'],
+          author: jsonEntry['author'] ?? jsonEntry['Author'],
+          description: jsonEntry['description'] ?? jsonEntry['Description'],
+          id: jsonEntry['id'],
         ),
       ),
     );
+  }
+
+  Future<Book> createBook(
+    Credentials credentials, {
+    Library library,
+    String title,
+    String author,
+    String description,
+  }) async {
+    var response = await http.post(
+      Uri.parse('${ms('library')}/library/${library.id}/book'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${credentials.token}',
+      },
+      body: jsonEncode({
+        'title': title,
+        'author': author,
+        'description': description,
+      }),
+    );
+    if (response.statusCode != 201) throw 'Couldn\'t create book';
+    var json = jsonDecode(utf8.decode(response.bodyBytes));
+    if (json == null) return null;
+    return Book(
+      name: json['title'] ?? json['Title'],
+      author: json['author'] ?? json['Author'],
+      description: json['description'] ?? json['Description'],
+      id: json['id'],
+    );
+  }
+
+  Future<void> deleteBook(
+    Credentials credentials, {
+    Library library,
+    Book book,
+  }) async {
+    var response = await http.delete(
+      Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${credentials.token}',
+      },
+    );
+    if (response.statusCode != 204) throw 'Couldn\'t delete book';
+  }
+
+  Future<void> requestRecoveryEmail({String email}) async {
+    var response = await http.post(
+      Uri.parse('${ms('auth')}/password/reset'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+      }),
+    );
+    if (response.statusCode != 204) throw 'Couldn\'t request recovery email';
+  }
+
+  Future<void> accountRecovery({String email, String code, String password}) async {
+    var response = await http.put(
+      Uri.parse('${ms('auth')}/password/reset'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'new_password': password,
+        'token': code,
+      }),
+    );
+    if (response.statusCode != 200) throw 'Couldn\'t recover account';
+  }
+
+  Future<BookData> downloadBook(
+    Credentials credentials, {
+    Book book,
+  }) async {
+    var response = await http.get(
+      Uri.parse('${ms('media')}/book/${book.id}/download'),
+      headers: {
+        // 'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${credentials.token}',
+      },
+    );
+    if (response.statusCode != 200) throw 'Couldn\'t download book';
+    return BookData(
+      bytes: response.bodyBytes,
+      mime: response.headers['content-type'],
+    );
+  }
+
+  Future<void> uploadBook(
+    Credentials credentials, {
+    Library library,
+    Book book,
+    Uint8List bytes,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${ms('media')}/book/upload'),
+    );
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'book',
+        // 'assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf',
+        bytes,
+        filename: 'file.epub',
+        contentType: http.MediaType.parse('application/epub'),
+      ),
+    );
+    // request.fields['book'] = bytes.toString(); // (await rootBundle.load('assets/THE_CARNIVALESQUE_GRIEFING_BEHAVIOUR_OF_BRAZILIAN_ONLINE_GAMERS.pdf')).buffer.asUint8List().toString();
+    request.fields['book_id'] = book.id;
+    request.fields['library_id'] = library.id;
+    request.headers['Authorization'] = 'Bearer ${credentials.token}';
+    var res = await request.send();
+    var wow = res.toString();
+    print(res);
   }
 }
