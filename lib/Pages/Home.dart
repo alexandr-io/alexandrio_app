@@ -269,36 +269,36 @@ class _HomePageState extends State<HomePage> {
                 return Scrollbar(
                   child: ListView(
                     children: [
-                      ListTile(
-                        leading: Icon(Icons.picture_as_pdf),
-                        onTap: () async {
-                          var bytes = (await rootBundle.load('assets/samples/pdf/Document10.pdf')).buffer.asUint8List();
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => PdfReaderPage(
-                                book: Book(name: 'OpenOffice for dummies'),
-                                bytes: bytes,
-                              ),
-                            ),
-                          );
-                        },
-                        title: Text('PDF Reader'),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.book),
-                        onTap: () async {
-                          var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => EpubReaderPage(
-                                book: Book(name: 'OpenOffice for dummies'),
-                                bytes: bytes,
-                              ),
-                            ),
-                          );
-                        },
-                        title: Text('EPUB Reader'),
-                      ),
+                      // ListTile(
+                      //   leading: Icon(Icons.picture_as_pdf),
+                      //   onTap: () async {
+                      //     var bytes = (await rootBundle.load('assets/samples/pdf/Document10.pdf')).buffer.asUint8List();
+                      //     await Navigator.of(context).push(
+                      //       MaterialPageRoute(
+                      //         builder: (BuildContext context) => PdfReaderPage(
+                      //           book: Book(name: 'OpenOffice for dummies'),
+                      //           bytes: bytes,
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   title: Text('PDF Reader'),
+                      // ),
+                      // ListTile(
+                      //   leading: Icon(Icons.book),
+                      //   onTap: () async {
+                      //     var bytes = (await rootBundle.load('assets/samples/epub/test.epub')).buffer.asUint8List();
+                      //     await Navigator.of(context).push(
+                      //       MaterialPageRoute(
+                      //         builder: (BuildContext context) => EpubReaderPage(
+                      //           book: Book(name: 'OpenOffice for dummies'),
+                      //           bytes: bytes,
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   title: Text('EPUB Reader'),
+                      // ),
                       if (snapshot.data.isEmpty)
                         Column(
                           mainAxisSize: MainAxisSize.min,
