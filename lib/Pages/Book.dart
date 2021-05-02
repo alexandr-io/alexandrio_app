@@ -3,6 +3,7 @@ import 'package:alexandrio_app/Data/Book.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:alexandrio_app/Data/Library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,6 +41,8 @@ class BookPage extends StatelessWidget {
                   : EpubReaderPage(
                       book: book,
                       bytes: bookData.bytes,
+                      credentials: credentials,
+                      library: library
                     ),
             ));
           },
