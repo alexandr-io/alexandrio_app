@@ -261,4 +261,35 @@ class AlexandrioAPI {
     var wow = res.toString();
     print(res);
   }
+
+  Future<void> updateBookProgress(Credentials credentials, Library library, Book book,  String progress) async {
+    var response = await http.post(
+      Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progress'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authoriztion': 'Bearer ${credentials.token}'
+      },
+      body: jsonEncode({
+        'progress': progress
+      }),
+    );
+
+    if (response.statusCode != 200) throw 'Couldn\'t update progress';
+
+    print(response);
+  }
+
+  Future<Book> getBookProgress(Credentials credentials, Library library, Book book) async {
+    var response = await http.get(
+      Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progres'),
+      headers: {
+        // 'Content-Type': 'application/json',
+        'Authoriztion': 'Bearer ${credentials.token}'
+      },
+    );
+
+    if (response.statusCode != 200) throw 'Couldn\'t get book progress';
+
+    print(response);
+  }
 }
