@@ -3,11 +3,8 @@ import 'dart:typed_data';
 
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:epub_view/epub_view.dart';
-// import 'package:epub_view/epub_view.dart';
 import 'package:epubx/epubx.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:alexandrio_app/Data/Book.dart';
 import 'package:alexandrio_app/Data/Epub.dart';
 import 'package:alexandrio_app/API/EpubParser.dart';
 
@@ -26,35 +23,44 @@ class EpubReaderPage extends StatefulWidget {
 }
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
+  bool compatibility = true;
   EpubController controller;
-  var _controller = ScrollController();
+  ScrollController _controller;
 
   @override
   void initState() {
     controller = EpubController(
-      // Load document
       document: EpubReader.readBook(widget.bytes),
-      // Set start point
       // epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
     );
+    _controller = ScrollController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Epub Reader - Reading ${widget.book.name}'),
-      ),
-      body: Row(
-        children: [
-          Expanded(
-            child: EpubView(
-              controller: controller,
-            ),
+        title: Text(widget.book.name),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.compare),
+            onPressed: () async => setState(() {
+              compatibility = !compatibility;
+            }),
           ),
-          Expanded(
-            child: Center(
+        ],
+      ),
+      body: compatibility
+          ? EpubView(controller: controller)
+          : Center(
               child: AspectRatio(
                 aspectRatio: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? 4 / 3 : 1 / 2,
                 child: NotificationListener<ScrollNotification>(
@@ -99,9 +105,6 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 

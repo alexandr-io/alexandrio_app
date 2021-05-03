@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'Home.dart';
 import 'Register.dart';
+import 'Settings.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -39,6 +40,15 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.transparent,
             elevation: 0.0,
             centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.settings),
+                tooltip: AppLocalizations.of(context).settingsButton,
+                onPressed: () async => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => SettingsPage(),
+                )),
+              ),
+            ],
           ),
         ),
         body: Center(

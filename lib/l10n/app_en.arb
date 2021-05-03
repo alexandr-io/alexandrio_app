@@ -36,5 +36,13 @@
   "resetCodeField": "Reset code",
   "newPasswordField": "New password",
   "repeatNewPasswordField": "Repeat new password",
-  "accountRecoveredSnack": "Password successfully reset! You can now login with your new credentials."
+  "accountRecoveredSnack": "Password successfully reset! You can now login with your new credentials.",
+  "noLibrariesHere": "There are no libraries created yet. To get started, use the add button.",
+  "noBooksHere": "There are no books uploaded yet. To get started, upload a book with the button below.",
+  "themeChangeButton": "Theme",
+  "themeSystemButton": "System theme",
+  "themeLightButton": "Light theme",
+  "themeDarkButton": "Dark theme",
+  "localeChangeButton": "Locale",
+  "localeSystemButton": "System locale"
 }
