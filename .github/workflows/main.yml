@@ -49,7 +49,7 @@ jobs:
             ACTION_NAME: "Desktop Linux"
             ENABLE: "--enable-linux-desktop"
             ARGS: ""
-            ARTIFACT_PATH: "build/linux/release/bundle"
+            ARTIFACT_PATH: "build/linux/x64/release/bundle"
             ARTIFACT_NAME: "Release-Linux"
 
           - target: macos
