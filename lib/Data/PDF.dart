@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:html/dom.dart' as dom;
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 class BookInfos {
   List<Widget> widgets = [];
+  List<dom.Element> htmlContent = [];
   Image cover;
 
   BookInfos({this.widgets, this.cover});

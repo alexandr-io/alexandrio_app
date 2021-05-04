@@ -32,31 +32,33 @@ class BookPage extends StatelessWidget {
               credentials,
               book: book,
             );
-            var progression = await AlexandrioAPI().getBookProgress(
-              credentials,
-              library,
-              book
-            );
+            var progression = await AlexandrioAPI()
+                .getBookProgress(credentials, library, book);
             await Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => bookData.mime == 'application/pdf'
-                  ? PdfReaderPage(
-                      book: book,
-                      bytes: bookData.bytes,
-                    )
-                  : EpubReaderPage(
-                      book: book,
-                      bytes: bookData.bytes,
-                      credentials: credentials,
-                      library: library,
-                      progression: progression,
-                    ),
+              builder: (BuildContext context) =>
+                  bookData.mime == 'application/pdf'
+                      ? PdfReaderPage(
+                          book: book,
+                          bytes: bookData.bytes,
+                          credentials: credentials,
+                          library: library,
+                          progression: progression,
+                        )
+                      : EpubReaderPage(
+                          book: book,
+                          bytes: bookData.bytes,
+                          credentials: credentials,
+                          library: library,
+                          progression: progression,
+                        ),
             ));
           },
           tooltip: AppLocalizations.of(context).readBook,
           child: Icon(Icons.chrome_reader_mode_rounded),
         ),
         body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+          headerSliverBuilder:
+              (BuildContext context, bool innerBoxIsScrolled) => [
             SliverAppBar(
               actions: [
                 IconButton(
@@ -80,15 +82,18 @@ class BookPage extends StatelessWidget {
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                               Text(
-                                AppLocalizations.of(context).confirmBookDeletionDescription,
+                                AppLocalizations.of(context)
+                                    .confirmBookDeletionDescription,
                                 style: Theme.of(context).textTheme.subtitle2,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   TextButton(
-                                    onPressed: () async => Navigator.of(context).pop(),
-                                    child: Text(AppLocalizations.of(context).cancelButton),
+                                    onPressed: () async =>
+                                        Navigator.of(context).pop(),
+                                    child: Text(AppLocalizations.of(context)
+                                        .cancelButton),
                                   ),
                                   SizedBox(width: 8.0),
                                   TextButton.icon(
@@ -103,10 +108,12 @@ class BookPage extends StatelessWidget {
                                       Navigator.of(context).pop();
                                     },
                                     style: ButtonStyle(
-                                      foregroundColor: MaterialStateProperty.all(Colors.red),
+                                      foregroundColor:
+                                          MaterialStateProperty.all(Colors.red),
                                     ),
                                     icon: Icon(Icons.delete),
-                                    label: Text(AppLocalizations.of(context).deleteButton),
+                                    label: Text(AppLocalizations.of(context)
+                                        .deleteButton),
                                   ),
                                 ],
                               ),
@@ -134,7 +141,10 @@ class BookPage extends StatelessWidget {
                       isAntiAlias: true,
                     ),
                     Container(
-                      color: Theme.of(context).appBarTheme.backgroundColor.withAlpha(196),
+                      color: Theme.of(context)
+                          .appBarTheme
+                          .backgroundColor
+                          .withAlpha(196),
                       width: double.infinity,
                       height: double.infinity,
                       child: Padding(
@@ -153,12 +163,15 @@ class BookPage extends StatelessWidget {
                                   children: [
                                     Text(
                                       book.name,
-                                      style: Theme.of(context).textTheme.headline5,
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
                                     ),
                                     if (book.author != null)
                                       Text(
                                         book.author,
-                                        style: Theme.of(context).textTheme.headline6,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6,
                                       ),
                                     // SizedBox(height: 8.0),
                                     // OutlinedButton.icon(
@@ -183,7 +196,8 @@ class BookPage extends StatelessWidget {
             ),
           ],
           body: ListView(
-            padding: EdgeInsets.all(20.0), // + MediaQuery.of(context).viewPadding,
+            padding:
+                EdgeInsets.all(20.0), // + MediaQuery.of(context).viewPadding,
             children: [
               if (book.description != null) ...[
                 Text(
