@@ -21,6 +21,7 @@ dependencies:
     git: git@github.com:williambulin/dart_discord
   epubx: any
   epub_view: any
+  flutter_html: any
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
