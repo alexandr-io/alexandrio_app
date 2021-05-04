@@ -1,6 +1,7 @@
 name: Flutter Build
 
-on: push
+on:
+  push:
   release:
     types: [published]
 
