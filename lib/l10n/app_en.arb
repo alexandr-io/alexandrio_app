@@ -44,5 +44,6 @@
   "themeLightButton": "Light theme",
   "themeDarkButton": "Dark theme",
   "localeChangeButton": "Locale",
-  "localeSystemButton": "System locale"
+  "localeSystemButton": "System locale",
+  "invalidCredentialsSnack": "Invalid credentials"
 }

@@ -36,5 +36,14 @@
   "resetCodeField": "Bestätigungscode",
   "newPasswordField": "Neues Passwort",
   "repeatNewPasswordField": "Neues Passwort wiederholen",
-  "accountRecoveredSnack": "Ihr Passwort wurde erfolgreich geändert! Sie können sich nun mit ihrem neuen Passwort anmelden."
+  "accountRecoveredSnack": "Ihr Passwort wurde erfolgreich geändert! Sie können sich nun mit ihrem neuen Passwort anmelden.",
+  "noLibrariesHere": "Es wurden noch keine Bibliotheken erstellt. Verwenden Sie die Schaltfläche 'Hinzufügen', um zu beginnen.",
+  "noBooksHere": "Es wurden noch keine Bücher hochgeladen. d Verwenden Sie die untere Schaltfläche, um zu beginnen.",
+  "themeChangeButton": "Design",
+  "themeSystemButton": "System Design",
+  "themeLightButton": "Helles Design",
+  "themeDarkButton": "Dunkles Design",
+  "localeChangeButton": "Sprache",
+  "localeSystemButton": "Systemsprache",
+  "invalidCredentialsSnack": "Ungültige Accountinformationen"
 }
