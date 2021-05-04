@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:alexandrio_app/API/Alexandrio.dart';
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:epub_view/epub_view.dart' hide Image;
 import 'package:epubx/epubx.dart' hide Image;

@@ -1,4 +1,7 @@
+import 'package:alexandrio_app/Credentials/CredentialsBloc.dart';
+import 'package:alexandrio_app/Credentials/CredentialsEvent.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -71,12 +74,15 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.logout),
                 tooltip: AppLocalizations.of(context).logoutButton,
-                onPressed: () async => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => LoginPage(),
-                  ),
-                  (route) => false,
-                ),
+                onPressed: () async {
+                  BlocProvider.of<CredentialsBloc>(context).add(CredentialsLogout());
+                  return Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                },
               ),
             ],
           ),

@@ -1,3 +1,5 @@
+import 'package:alexandrio_app/Credentials/CredentialsBloc.dart';
+import 'package:alexandrio_app/Credentials/CredentialsEvent.dart';
 import 'package:alexandrio_app/Locale/LocaleBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,13 +15,17 @@ Future<void> main() async {
   Hive.registerAdapter(ColorAdapter());
   var themeBox = await Hive.openBox('Theme');
   var settingsBox = await Hive.openBox('Settings');
+  var credentialsBox = await Hive.openBox('Credentials');
 
   runApp(
     BlocProvider(
-      create: (BuildContext context) => LocaleBloc(settingsBox),
+      create: (BuildContext context) => CredentialsBloc(),
       child: BlocProvider(
-        create: (BuildContext context) => ThemeBloc(themeBox),
-        child: App(),
+        create: (BuildContext context) => LocaleBloc(settingsBox),
+        child: BlocProvider(
+          create: (BuildContext context) => ThemeBloc(themeBox),
+          child: App(),
+        ),
       ),
     ),
   );
