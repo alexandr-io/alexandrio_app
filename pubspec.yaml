@@ -16,9 +16,9 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.0.0
   flutter_ui_tools:
-    git: git@github.com:williambulin/flutter_ui_tools
+    git: https://github.com/williambulin/flutter_ui_tools
   dart_discord:
-    git: git@github.com:williambulin/dart_discord
+    git: https://github.com/williambulin/dart_discord
   epubx: any
   epub_view: any
   flutter_html: any
@@ -28,6 +28,8 @@ dependencies:
   # file_picker: ^3.0.1
   file_picker_cross: ^4.3.2
   syncfusion_flutter_pdf: ^18.3.53-beta
+  flutter_bloc: any
+  equatable: any
 
 dev_dependencies:
   hive_generator: ^1.1.0

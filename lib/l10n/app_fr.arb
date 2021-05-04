@@ -36,5 +36,13 @@
   "resetCodeField": "Code de réinitialisation",
   "newPasswordField": "Nouveau mot de passe",
   "repeatNewPasswordField": "Répéter le nouveau mot de passe",
-  "accountRecoveredSnack": "Mot de passe réinitialisé! Vous pouvez maintenant vous connecter avec vos identifiants."
+  "accountRecoveredSnack": "Mot de passe réinitialisé! Vous pouvez maintenant vous connecter avec vos identifiants.",
+  "noLibrariesHere": "Il n'y a pas de librarie de créée pour le moment. Pour commencer, utiliser le bouton de création.",
+  "noBooksHere": "Il n'y a aucun livre dans cette librarie. Pour commencer, ajoutez un livre à l'aide du bouton ci-dessous.",
+  "themeChangeButton": "Thème",
+  "themeSystemButton": "Thème système",
+  "themeLightButton": "Thème blanc",
+  "themeDarkButton": "Thème noir",
+  "localeChangeButton": "Langage",
+  "localeSystemButton": "Langue système"
 }

@@ -1,14 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:alexandrio_app/API/Alexandrio.dart';
 import 'package:alexandrio_app/Data/Book.dart';
 import 'package:epub_view/epub_view.dart' hide Image;
-// import 'package:epub_view/epub_view.dart';
 import 'package:epubx/epubx.dart' hide Image;
 import 'package:flutter/material.dart';
-import 'package:alexandrio_app/Data/Epub.dart';
 import 'package:alexandrio_app/API/EpubParser.dart';
+import 'package:alexandrio_app/API/Alexandrio.dart';
+import 'package:alexandrio_app/Data/Epub.dart';
 import 'package:alexandrio_app/Data/Library.dart';
 import 'package:alexandrio_app/Data/Credentials.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -34,6 +33,7 @@ class EpubReaderPage extends StatefulWidget {
 }
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
+  bool compatibility = true;
   EpubController controller;
   ScrollController _controller;
   EpubBook _doc;
@@ -41,9 +41,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
   @override
   void initState() {
     controller = EpubController(
-      // Load document
       document: EpubReader.readBook(widget.bytes),
-      // Set start point
       // epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
     );
     _controller = ScrollController();
@@ -51,20 +49,29 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Epub Reader - Reading ${widget.book.name}'),
+        title: Text(widget.book.name),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.compare),
+            onPressed: () async => setState(() {
+              compatibility = !compatibility;
+            }),
+          ),
+        ],
       ),
-      body: Row(
-        children: [
-          // Expanded(
-          //   child: EpubView(
-          //     controller: controller,
-          //   ),
-          // ),
-          Expanded(
-            child: Center(
+      body: compatibility
+          ? EpubView(controller: controller)
+          : Center(
               child: AspectRatio(
                 aspectRatio: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? 4 / 3 : 1 / 2,
                 child: NotificationListener<ScrollNotification>(
@@ -87,44 +94,38 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                         builder: (BuildContext context, AsyncSnapshot<BookInfos> snapshot) {
                           if (snapshot.hasData) {
                             var content = snapshot.data;
-                            return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                for (var html in content.htmlContent) Html(
-                                  data: html.outerHtml,
-                                  customRender: {
-                                    'img': (context, child, attributes, node) {
-                                      final url = attributes['src'].replaceAll('../', '');
-                                      return Image(
+                            return Center(
+                                child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                              for (var html in content.htmlContent)
+                                Html(data: html.outerHtml, customRender: {
+                                  'img': (context, child, attributes, node) {
+                                    final url = attributes['src'].replaceAll('../', '');
+                                    return Image(
                                         image: MemoryImage(
-                                          Uint8List.fromList(_doc.Content.Images[url].Content),
-                                        )
-                                      );
-                                    }
+                                      Uint8List.fromList(_doc.Content.Images[url].Content),
+                                    ));
                                   }
-                                )
-                              ]));
-                          }
-                          else if (snapshot.hasError) {
+                                })
+                            ]));
+                          } else if (snapshot.hasError) {
                             print(snapshot.error);
                           } else {
-                              return const Padding(
-                                padding: EdgeInsets.only(top: 16),
-                                child: Text('Chargement...'),
-                              );
+                            return const Padding(
+                              padding: EdgeInsets.only(top: 16),
+                              child: Text('Chargement...'),
+                            );
                           }
+                          return null;
                           // children: List.generate(content.length, (index) {
                           //   return Html(data: );
                           //}
-                        }
+                        },
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 

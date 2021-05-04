@@ -1,136 +1,19 @@
-import 'package:alexandrio_app/API/Alexandrio.dart';
-import 'package:alexandrio_app/Data/Book.dart';
-import 'package:alexandrio_app/Data/Credentials.dart';
-import 'package:alexandrio_app/Data/Library.dart';
-import 'package:alexandrio_app/Pages/Feedback.dart';
-import 'package:alexandrio_app/Pages/Login.dart';
-import 'package:alexandrio_app/Pages/PdfReader.dart';
-import 'package:alexandrio_app/Pages/Settings.dart';
-import 'package:alexandrio_app/Pages/EpubReader.dart';
+import 'package:alexandrio_app/Credentials/CredentialsBloc.dart';
+import 'package:alexandrio_app/Credentials/CredentialsEvent.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ui_tools/AppBarBlur.dart';
 import 'package:flutter_ui_tools/BottomModal.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'Book.dart';
-import 'EpubReader.dart';
-import 'Library.dart';
-
-class Library2 {
-  final String name;
-  final List<Book> books;
-
-  Library2({
-    this.name,
-    this.books,
-  });
-}
-
-var libraries2 = [
-  Library2(
-    name: 'Library 1',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://www.designforwriters.com/wp-content/uploads/2017/10/design-for-writers-book-cover-tf-2-a-million-to-one.jpg',
-      ),
-      Book(
-        name: 'Book 2',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Book 3',
-        thumbnail: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/action-thriller-book-cover-design-template-3675ae3e3ac7ee095fc793ab61b812cc_screen.jpg?ts=1588152105',
-      ),
-      Book(
-        name: 'Book 4',
-        thumbnail: 'https://static01.nyt.com/images/2014/02/05/books/05before-and-after-slide-T6H2/05before-and-after-slide-T6H2-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-      ),
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://www.designforwriters.com/wp-content/uploads/2017/10/design-for-writers-book-cover-tf-2-a-million-to-one.jpg',
-      ),
-      Book(
-        name: 'Book 2',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Book 3',
-        thumbnail: 'https://d1csarkz8obe9u.cloudfront.net/posterpreviews/action-thriller-book-cover-design-template-3675ae3e3ac7ee095fc793ab61b812cc_screen.jpg?ts=1588152105',
-      ),
-      Book(
-        name: 'Book 4',
-        thumbnail: 'https://static01.nyt.com/images/2014/02/05/books/05before-and-after-slide-T6H2/05before-and-after-slide-T6H2-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-      ),
-    ],
-  ),
-  Library2(
-    name: 'Library 2',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://static01.nyt.com/images/2014/02/05/books/05before-and-after-slide-T6H2/05before-and-after-slide-T6H2-superJumbo.jpg?quality=75&auto=webp&disable=upscale',
-      ),
-      Book(
-        name: 'Book 2',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-    ],
-  ),
-  Library2(
-    name: 'Library 3',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Haskell for novices',
-        thumbnail: null, // 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-    ],
-  ),
-  Library2(
-    name: 'Library 3',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Haskell for novices',
-        thumbnail: null, // 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-    ],
-  ),
-  Library2(
-    name: 'Library 3',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Haskell for novices',
-        thumbnail: null, // 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-    ],
-  ),
-  Library2(
-    name: 'Library 3',
-    books: [
-      Book(
-        name: 'Book 1',
-        thumbnail: 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-      Book(
-        name: 'Haskell for novices',
-        thumbnail: null, // 'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-      ),
-    ],
-  ),
-];
+import '/API/Alexandrio.dart';
+import '/Data/Credentials.dart';
+import '/Data/Library.dart';
+import '/Pages/Feedback.dart';
+import '/Pages/Login.dart';
+import '/Pages/Settings.dart';
+import '/Pages/Book.dart';
+import '/Pages/Library.dart';
 
 class HomePage extends StatefulWidget {
   final Credentials credentials;
@@ -191,12 +74,15 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.logout),
                 tooltip: AppLocalizations.of(context).logoutButton,
-                onPressed: () async => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => LoginPage(),
-                  ),
-                  (route) => false,
-                ),
+                onPressed: () async {
+                  BlocProvider.of<CredentialsBloc>(context).add(CredentialsLogout());
+                  return Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                },
               ),
             ],
           ),
