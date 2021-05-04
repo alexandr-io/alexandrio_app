@@ -89,9 +89,6 @@ jobs:
         flutter create .
         flutter pub get
 
-    - name: Run tests
-      run: flutter test
-
     - name: Build
       run: flutter build ${{matrix.target}} ${{matrix.ARGS}}
 
