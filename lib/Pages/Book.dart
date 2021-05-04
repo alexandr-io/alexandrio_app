@@ -32,6 +32,11 @@ class BookPage extends StatelessWidget {
               credentials,
               book: book,
             );
+            var progression = await AlexandrioAPI().getBookProgress(
+              credentials,
+              library,
+              book
+            );
             await Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => bookData.mime == 'application/pdf'
                   ? PdfReaderPage(
@@ -42,7 +47,8 @@ class BookPage extends StatelessWidget {
                       book: book,
                       bytes: bookData.bytes,
                       credentials: credentials,
-                      library: library
+                      library: library,
+                      progression: progression,
                     ),
             ));
           },

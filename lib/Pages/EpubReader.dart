@@ -18,13 +18,15 @@ class EpubReaderPage extends StatefulWidget {
   final Library library;
   final Credentials credentials;
   final Uint8List bytes;
+  final String progression;
 
   const EpubReaderPage({
     Key key,
     @required this.book,
     @required this.bytes,
     @required this.credentials,
-    @required this.library
+    @required this.library,
+    @required this.progression
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class EpubReaderPage extends StatefulWidget {
 
 class _EpubReaderPageState extends State<EpubReaderPage> {
   EpubController controller;
-  final _controller = ScrollController();
+  ScrollController _controller;
   EpubBook _doc;
 
   @override
@@ -44,6 +46,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
       // Set start point
       // epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
     );
+    _controller = ScrollController();
     super.initState();
   }
 
@@ -67,11 +70,11 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (scrollNotification) {
                     if (scrollNotification is ScrollEndNotification) {
-                      print(_controller.offset); // Current offset
-                      print(_controller.position.maxScrollExtent); // Maximum offset
-                      print((_controller.offset * 100) / _controller.position.maxScrollExtent); // Percentage readed
-                      // var progress = (_controller.offset * 100) / _controller.position.maxScrollExtent;
-                      // AlexandrioAPI().updateBookProgress(widget.credentials, widget.library, widget.book, progress.toString());
+                      // print(_controller.offset); // Current offset
+                      // print(_controller.position.maxScrollExtent); // Maximum offset
+                      // print((_controller.offset * 100) / _controller.position.maxScrollExtent); // Percentage readed
+                      var progress = (_controller.offset * 100) / _controller.position.maxScrollExtent;
+                      AlexandrioAPI().updateBookProgress(widget.credentials, widget.library, widget.book, progress.toString());
                     }
                     return true;
                   },
@@ -129,6 +132,10 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
     // var book = await rootBundle.load('assets/samples/epub/test4.epub');
     var epubBook = await EpubReader.readBook(widget.bytes); // book.buffer.asUint8List());
     _doc = epubBook;
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      var offset = (double.parse(widget.progression ?? '0') * _controller.position.maxScrollExtent) / 100;
+      _controller.jumpTo(offset);
+    });
     // print(epubBook.Title);
     // print(epubBook.Author);
     // print(epubBook.AuthorList);
