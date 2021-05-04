@@ -267,7 +267,7 @@ class AlexandrioAPI {
       Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progress'),
       headers: {
         'Content-Type': 'application/json',
-        'Authoriztion': 'Bearer ${credentials.token}'
+        'Authorization': 'Bearer ${credentials.token}'
       },
       body: jsonEncode({
         'progress': progress
@@ -275,21 +275,23 @@ class AlexandrioAPI {
     );
 
     if (response.statusCode != 200) throw 'Couldn\'t update progress';
-
-    print(response);
+    // print(response);
   }
 
-  Future<Book> getBookProgress(Credentials credentials, Library library, Book book) async {
+  Future<String> getBookProgress(Credentials credentials, Library library, Book book) async {
     var response = await http.get(
-      Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progres'),
+      Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progress'),
       headers: {
         // 'Content-Type': 'application/json',
-        'Authoriztion': 'Bearer ${credentials.token}'
+        'Authorization': 'Bearer ${credentials.token}'
       },
     );
 
-    if (response.statusCode != 200) throw 'Couldn\'t get book progress';
+    if (response.statusCode != 200) return '0';
 
     print(response);
+    var json = jsonDecode(utf8.decode(response.bodyBytes));
+
+    return json['progress'] ?? '0';
   }
 }
