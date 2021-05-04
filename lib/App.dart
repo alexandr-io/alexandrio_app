@@ -17,7 +17,7 @@ class App extends StatelessWidget {
             if (themeState is ThemeLoaded && localeState is LocaleLoaded) {
               return ThemeableMaterialApp(
                 appBuilder: (BuildContext context, ThemeData darkTheme, ThemeData lightTheme, ThemeMode themeMode) => MaterialApp(
-                  title: 'Alexandrio',
+                  title: 'Alexandrio 2',
                   debugShowCheckedModeBanner: false,
                   theme: lightTheme,
                   darkTheme: darkTheme,
