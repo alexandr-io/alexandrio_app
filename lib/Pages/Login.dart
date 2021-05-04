@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context) {
               if (state is CredentialsLoggedIn) {
                 WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  var credentials = await AlexandrioAPI().loginUser(login: loginController.text, password: passwordController.text);
+                  var credentials = await AlexandrioAPI().loginUser(login: state.login, password: state.password);
                   await Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (BuildContext context) => HomePage(
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       behavior: SnackBarBehavior.floating,
-                      content: Text('${state.error}'),
+                      content: Text('${state.error}: ${AppLocalizations.of(context).invalidCredentialsSnack}'),
                     ),
                   );
                 });

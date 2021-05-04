@@ -35,7 +35,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.0"
   bloc:
     dependency: transitive
     description:
@@ -210,7 +210,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "92309f932556af7fcdf074bb9ff7b9b50cab33bf"
-      url: "git@github.com:williambulin/dart_discord"
+      url: "https://github.com/williambulin/dart_discord"
     source: git
     version: "0.0.0"
   dart_style:
@@ -353,7 +353,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "9c8af86a7e33dbb8e221062c2d24e4e9f3a9636a"
-      url: "git@github.com:williambulin/flutter_ui_tools"
+      url: "https://github.com/williambulin/flutter_ui_tools"
     source: git
     version: "1.0.0+1"
   flutter_web_plugins:

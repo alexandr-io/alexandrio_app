@@ -22,3 +22,5 @@ class CredentialsLogin extends CredentialsEvent {
 }
 
 class CredentialsLogout extends CredentialsEvent {}
+
+class CredentialsPreviousLogin extends CredentialsEvent {}

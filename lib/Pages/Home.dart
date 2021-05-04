@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
                 tooltip: AppLocalizations.of(context).logoutButton,
                 onPressed: () async {
                   BlocProvider.of<CredentialsBloc>(context).add(CredentialsLogout());
+                  await Future.delayed(Duration(milliseconds: 200));
                   return Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage(),

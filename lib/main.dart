@@ -19,7 +19,7 @@ Future<void> main() async {
 
   runApp(
     BlocProvider(
-      create: (BuildContext context) => CredentialsBloc(),
+      create: (BuildContext context) => CredentialsBloc(credentialsBox),
       child: BlocProvider(
         create: (BuildContext context) => LocaleBloc(settingsBox),
         child: BlocProvider(
