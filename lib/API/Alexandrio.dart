@@ -11,7 +11,7 @@ import 'package:http_parser/http_parser.dart' as http;
 
 class AlexandrioAPI {
   String ms(String ms) {
-    return 'https://$ms.preprod.alexandrio.cloud';
+    return 'https://$ms.alexandrio.cloud';
   }
 
   AlexandrioAPI() {
@@ -262,16 +262,11 @@ class AlexandrioAPI {
     print(res);
   }
 
-  Future<void> updateBookProgress(Credentials credentials, Library library, Book book,  String progress) async {
+  Future<void> updateBookProgress(Credentials credentials, Library library, Book book, String progress) async {
     var response = await http.post(
       Uri.parse('${ms('library')}/library/${library.id}/book/${book.id}/progress'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${credentials.token}'
-      },
-      body: jsonEncode({
-        'progress': progress
-      }),
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ${credentials.token}'},
+      body: jsonEncode({'progress': progress}),
     );
 
     if (response.statusCode != 200) throw 'Couldn\'t update progress';
