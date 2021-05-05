@@ -165,18 +165,29 @@ class _LibraryPageState extends State<LibraryPage> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        child: Container(
-                                          width: 160.0 * (10.0 / 16.0) / 1.5,
-                                          child: Image.network(
-                                            'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
-                                            height: 160.0 / 1.5,
-                                            fit: BoxFit.cover,
-                                            filterQuality: FilterQuality.high,
-                                            isAntiAlias: true,
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                        width: 160.0 * (10.0 / 16.0) / 1.5,
+                                        height: 160.0 / 1.5,
+                                        child: Center(
+                                          child: Text(
+                                            '?',
+                                            style: Theme.of(context).textTheme.headline1.copyWith(
+                                                  fontSize: 48.0,
+                                                  color: Theme.of(context).colorScheme.onPrimary,
+                                                ),
                                           ),
                                         ),
+                                        // child: Image.network(
+                                        //   'https://edit.org/images/cat/book-covers-big-2019101610.jpg',
+                                        //   height: 160.0 / 1.5,
+                                        //   fit: BoxFit.cover,
+                                        //   filterQuality: FilterQuality.high,
+                                        //   isAntiAlias: true,
+                                        // ),
                                       ),
                                     ),
                                     Padding(
