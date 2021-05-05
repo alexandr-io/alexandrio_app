@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as flutter hide Element;
+import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
 import 'package:alexandrio_app/Data/PDF.dart';
@@ -8,8 +9,9 @@ BookInfos fillPDFList(PdfContent book) {
   var bookInfos = BookInfos(widgets: []);
   var contentPDF = PdfToHtml(book.allLine);
   var content = html.parse(contentPDF.finalString);
-  var infos = retrieveTextStyle(content.body);
+  var infos = retrieveTextStyle(content.body, contentPDF.finalBaseList);
 
+  bookInfos.htmlContent.add(content.body);
   if (infos != null && infos.widgets.isNotEmpty) {
     for (var i = 0; i < infos.widgets.length; ++i) {
       bookInfos.widgets.add(infos.widgets[i]);
@@ -18,7 +20,7 @@ BookInfos fillPDFList(PdfContent book) {
   return (bookInfos);
 }
 
-BookInfos retrieveTextStyle(dynamic nodes) {
+BookInfos retrieveTextStyle(dynamic nodes, List<double> baseList) {
   var pageTexts = BookInfos(widgets: []);
   var tmp = nodes;
 
@@ -26,54 +28,99 @@ BookInfos retrieveTextStyle(dynamic nodes) {
     tmp = tmp.children;
   }
 
+  // for (var i = 0; i < tmp.nodes.length; ++i) {
+  //   pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text));
   for (var i = 0; i < tmp.nodes.length; ++i) {
-    if (tmp.nodes[i].runtimeType == Element) {
-      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text));
+    if (tmp.nodes[i].firstChild != null && tmp.nodes[i].localName == 'h1') {
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[0])));
+    } else if (tmp.nodes[i].firstChild != null &&
+        tmp.nodes[i].localName == 'h2') {
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[1])));
+    } else if (tmp.nodes[i].firstChild != null &&
+        tmp.nodes[i].localName == 'h3') {
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[2])));
+    } else if (tmp.nodes[i].firstChild != null &&
+        tmp.nodes[i].localName == 'h4') {
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[3])));
+    } else if (tmp.nodes[i].firstChild != null &&
+        tmp.nodes[i].localName == 'h5') {
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[4])));
     } else {
-      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text));
+      pageTexts.widgets.add(flutter.Text(tmp.nodes[i].text,
+          style: TextStyle(fontSize: baseList[5])));
     }
   }
   return pageTexts;
 }
 
-String replaceCharAt(String oldString, int index, String newChar) {
+String replaceCharAt(String oldString, int index, String newChar, int size) {
   return oldString.substring(0, index) +
       newChar +
-      oldString.substring(index + 1);
+      oldString.substring(index + size);
 }
 
 class PdfToHtml {
   var finalString = '<body>';
   final tab = ['<h1>', '<h2>', '<h3>', '<h4>', '<h5>', '<p>'];
   final endtab = ['</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</p>'];
+  var finalBaseList;
 
   PdfToHtml(List<TextLine> allLine) {
     var base = _getFirstValue(allLine);
     var baseList = [base];
     for (var line in allLine) {
       var tmpValue = getLineValue(line);
-      // if (base != tmpValue) {
-      //   if (baseList.length == 6 && tmpValue < baseList[5]) {
-      //     baseList[5] = tmpValue;
-      //     _uppersize(_sortList(baseList));
-      //   } else if (baseList.length != 6) {
-      //     baseList.add(tmpValue);
-      //     _uppersize(_sortList(baseList));
-      //   }
-      // }
+      if (base != tmpValue && !baseList.contains(tmpValue)) {
+        if (baseList.length == 6 && tmpValue > baseList[5]) {
+          baseList[5] = tmpValue;
+          _uppersize(_sortList(baseList));
+        } else if (baseList.length != 6) {
+          if (baseList[baseList.length - 1] > tmpValue) {
+            addOneSize(baseList.length - 1);
+            baseList.add(tmpValue);
+          } else {
+            baseList.add(tmpValue);
+            _uppersize(_sortList(baseList));
+          }
+        }
+      }
       base = tmpValue;
       _addbalise(base, baseList, false);
       for (var word in line.wordCollection) {
         var content = word.glyphs;
+        tmpValue = content[0].fontSize;
+        if (base != tmpValue) {
+          _addbalise(base, baseList, true);
+          if (!baseList.contains(tmpValue)) {
+            if (baseList.length == 6 && tmpValue > baseList[5]) {
+              baseList[5] = tmpValue;
+              _uppersize(_sortList(baseList));
+            } else if (baseList.length != 6) {
+              if (baseList[baseList.length - 1] > tmpValue) {
+                addOneSize(baseList.length - 1);
+                baseList.add(tmpValue);
+              } else {
+                baseList.add(tmpValue);
+                _uppersize(_sortList(baseList));
+              }
+            }
+          }
+          base = tmpValue;
+          _addbalise(base, baseList, false);
+        }
         for (var i = 0; i < content.length; ++i) {
           finalString += content[i].text;
         }
-        finalString += ' ';
       }
-      finalString = finalString.substring(0, finalString.length - 1);
       _addbalise(base, baseList, true);
     }
     finalString += '</body>';
+    finalBaseList = baseList;
   }
 
   List<int> _sortList(List<double> baseList) {
@@ -97,13 +144,16 @@ class PdfToHtml {
     subtab[subtab.length - 1] = '<p>';
     var endsubtab = endtab.sublist(change[0], change[1]);
     endsubtab[endsubtab.length - 1] = '</p>';
-    for (var i = 0; i < finalString.length; ++i) {
+    for (var i = 0; i < finalString.length - 4; ++i) {
       for (var j = 0; j < subtab.length - 1; ++j) {
-        if (finalString.substring(i, subtab[j].length) == subtab[j]) {
-          finalString = replaceCharAt(finalString, i, subtab[j + 1]);
-        } else if (finalString.substring(i, endsubtab[j].length) ==
+        var tmp = finalString.substring(i, subtab[j].length + i);
+        if (tmp == subtab[j]) {
+          finalString =
+              replaceCharAt(finalString, i, subtab[j + 1], subtab[j].length);
+        } else if (finalString.substring(i, endsubtab[j].length + i) ==
             endsubtab[j]) {
-          finalString = replaceCharAt(finalString, i, endsubtab[j + 1]);
+          finalString = replaceCharAt(
+              finalString, i, endsubtab[j + 1], endsubtab[j].length);
         }
       }
     }
@@ -139,5 +189,15 @@ class PdfToHtml {
       return (line.wordCollection[0].glyphs[0].fontSize);
     }
     return (0.0);
+  }
+
+  void addOneSize(int length) {
+    for (var i = 0; i < finalString.length - 3; ++i) {
+      if (finalString.substring(i, 3 + i) == '<p>') {
+        finalString = replaceCharAt(finalString, i, tab[length], 3);
+      } else if (finalString.substring(i, 4 + i) == '</p>') {
+        finalString = replaceCharAt(finalString, i, endtab[length], 4);
+      }
+    }
   }
 }
